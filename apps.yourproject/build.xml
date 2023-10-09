@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="apps.yourproject" default="build_all">
+<description>
+Builds apps/yourproject.
+</description>
+
+<import file="../../buildfiles/antfiles/targets_phaselibs.xml" />
+
+<property name="phaselib.javac.classpath" value="classpath.common.base" />
+
+<target name="create_eclipse_only" depends="create_eclipse_only_test">
+  <RSBeginTask />
+	<RSEclipse  projectname="${ant.project.name}"
+				dirname="${dir.buildxml}"
+				externalclass="/commons.base/bin"
+	/>
+</target>
+
+	<target name="compile" description="Builds the classes for this component.">
+		<RSBeginTask />
+		<mkdir dir="${dir.buildxml}/bin" />
+		<RSJavac destdir="${dir.buildxml}/bin" srcdir="${dir.buildxml}" classpathref="${phaselib.javac.classpath}"  buildReportName="${ant.project.name}" />
+	</target>
+
+	<target name="jar_config" />
+
+</project>

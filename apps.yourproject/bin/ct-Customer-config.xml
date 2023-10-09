@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- Common config.xml including all service definitions -->
+<configuration>
+<!-- El orden de los ficheros es importante, no modificarlos! -->
+ 	 <hierarchicalXml fileName="ct-Adasoft-red-functions.xml"/>
+     <hierarchicalXml fileName="ct-Customer-apps-ebr.xml"/>
+     <hierarchicalXml fileName="apps-wd.xml"/>
+     <hierarchicalXml fileName="apps-wip.xml"/>
+     <hierarchicalXml fileName="apps-recipeeditor.xml"/>
+     <hierarchicalXml fileName="clientfw-commons.xml"/>
+     <hierarchicalXml fileName="clientfw-grapheditor.xml"/>
+     <hierarchicalXml fileName="clientfw-pec.xml"/>
+     <hierarchicalXml fileName="clientfw-pmc.xml"/>
+     <hierarchicalXml fileName="commons-base.xml"/>
+     <hierarchicalXml fileName="commons-deviation.xml"/>
+     <hierarchicalXml fileName="commons-livedata.xml"/>
+     <hierarchicalXml fileName="commons-messaging.xml"/>
+     <hierarchicalXml fileName="commons-versioning.xml"/>
+     <hierarchicalXml fileName="commons-security.xml"/>
+     <hierarchicalXml fileName="commons-audittrail.xml"/>
+     <hierarchicalXml fileName="ct-Customer-SublotBarcode.xml"/>     
+     <hierarchicalXml fileName="services-archivepurge.xml"/>
+     <hierarchicalXml fileName="services-batchreport.xml"/>
+     <hierarchicalXml fileName="services-eqm.xml"/>
+     <hierarchicalXml fileName="services-eto.xml"/>
+     <hierarchicalXml fileName="services-inventory.xml"/>
+     <hierarchicalXml fileName="services-recipe.xml"/>
+     <hierarchicalXml fileName="services-s88.xml"/>
+     <hierarchicalXml fileName="services-s88equipment.xml"/>
+     <hierarchicalXml fileName="custService-wdOrder.xml"/>
+     <hierarchicalXml fileName="services-wip.xml"/>
+     <!-- <hierarchicalXml fileName="services-order.xml"/> -->
+     <hierarchicalXml fileName="ct-Customer-services-order.xml" />
+</configuration>

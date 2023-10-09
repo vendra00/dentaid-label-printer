@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="0" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="false" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Time at which runtime procedure has been completed</description>
+    <name>X_completed</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of completion of this runtime procedure</description>
+    <name>X_completionSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="113" text-length="0">
+    <description>Reference to control recipe entity</description>
+    <name>X_controlRecipe</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of creation of this AT object</description>
+    <name>X_creationSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="false" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Instance number of runtime procedure being executed</description>
+    <name>X_instanceCount</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="false" referenced-key="ATDefinition-X_Procedure" referenced-type="64" text-length="0">
+    <description>Reference to recipe entity (procedure)</description>
+    <name>X_procedure</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Reference to the RuntimeActivitySet for the current runtime procedure. The field has a value only if the procedure is running</description>
+    <name>X_runtimeActivitySetKey</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>CL: S88RuntimeEntityState</description>
+    <name>X_state</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="false" referenced-key="ATDefinition-X_Procedure" referenced-type="64" text-length="0">
+        <description>Reference to recipe entity (procedure)</description>
+        <name>X_procedure</name>
+      </column>
+    </column-info>
+    <description>Fasten top down query</description>
+    <name>X_RtProcedure_RefProcedure</name>
+  </at-index-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="-1" referenced-type="113" text-length="0">
+        <description>Reference to control recipe entity</description>
+        <name>X_controlRecipe</name>
+      </column>
+    </column-info>
+    <description>Fasten top down query</description>
+    <name>X_parentControlRecipe</name>
+  </at-index-definitions>
+  <description>Runtime representation of procedure</description>
+  <name>X_RtProcedure</name>
+  <parameters data-type="2" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>LRUSize</name>
+    <user-defined-attributes />
+    <value>0</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>baseClass</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88.impl.execution.AbstractRuntimeEntity</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>libName</name>
+    <user-defined-attributes />
+    <value>execution</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>packagePrefix</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>publishedAPI</name>
+    <user-defined-attributes />
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>useCache</name>
+    <user-defined-attributes />
+    <value>true</value>
+  </parameters>
+</DATDefinition>
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<configuration>
+    <ProductionExecutionClient>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.controller.ProductionExecutionClient
+        </implementationClass>
+    </ProductionExecutionClient>
+    <DeinitializationRegistry>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.controller.DeinitializationRegistry
+        </implementationClass>
+    </DeinitializationRegistry>
+    <ResourceManager>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.controller.ResourceManager
+        </implementationClass>
+    </ResourceManager>
+    <LogoutAction>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.action.LogoutAction
+        </implementationClass>
+    </LogoutAction>
+    <StartOrderStepAction>
+        <implementationClass>
+            com.rockwell.custmes.apps.ebr.ifc.cockpit.CustStartOrderStepAction
+        </implementationClass>
+    </StartOrderStepAction>    
+    <NavigatorController>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.navigator.NavigatorController
+        </implementationClass>
+    </NavigatorController>
+    <StepHistory>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.navigator.StepHistory
+        </implementationClass>
+    </StepHistory>
+    <HistoryStep>
+        <implementationClass>
+            com.rockwell.mes.clientfw.pec.impl.navigator.HistoryStep
+        </implementationClass>
+    </HistoryStep>
+</configuration>
+

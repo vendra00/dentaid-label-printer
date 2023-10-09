@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATRow at-definition-key="ATDefinition-X_BuildingBlock2ParamClass" object-source="1" parent-key="0" purge-status="false" type="3">
+  <data-cells data-type="4" referenced-type="0">
+    <name>X_bbType</name>
+    <value>MESPhaseLib</value>
+  </data-cells>
+  <data-cells data-type="4" referenced-type="0">
+    <name>X_identifier</name>
+    <value>RESTful Call</value>
+  </data-cells>
+  <data-cells data-type="2" referenced-type="0">
+    <name>X_index</name>
+    <value>1</value>
+  </data-cells>
+  <data-cells data-type="8" referenced-type="64">
+    <name>X_paramClass</name>
+    <value>ATRow-X_ParameterClass__FE81962E-90AE-4770-0187-F7B2BC28442D_</value>
+  </data-cells>
+  <data-cells data-type="8" referenced-type="64">
+    <name>X_phaseLibRef</name>
+    <value>ATRow-X_PhaseLib__32C4C633-6CAB-E7EC-BF20-CBEE553A5385_</value>
+  </data-cells>
+  <name>{BA4700D3-E0F0-7503-C4AE-9909FDEF00E3}</name>
+</DATRow>
+

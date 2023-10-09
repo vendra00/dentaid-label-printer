@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="1" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="true" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="200">
+    <description>url for the endpoint</description>
+    <name>AD_url</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of creation of this AT object</description>
+    <name>X_creationSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_RtPhase" referenced-type="64" text-length="0">
+    <description>Reference to runtime phase</description>
+    <name>X_parent</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_RtPhase" referenced-type="64" text-length="0">
+        <description>Reference to runtime phase</description>
+        <name>X_parent</name>
+      </column>
+    </column-info>
+    <description>Index for X_parent column</description>
+    <name>AD_PhDatRest0100</name>
+  </at-index-definitions>
+  <description>Runtime phase data for PhaseLib &lt;RESTFUL Phase (AD) [1.0]&gt;</description>
+  <name>AD_PhDatRest0100</name>
+</DATDefinition>
+

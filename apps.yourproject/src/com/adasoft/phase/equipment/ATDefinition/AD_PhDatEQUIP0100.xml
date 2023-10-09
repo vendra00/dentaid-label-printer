@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="1" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="true" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The boolean property value</description>
+    <name>AD_BooleanValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>The user bundle identifier</description>
+    <name>AD_BundleId</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>String value of date time format</description>
+    <name>AD_DateTimeFormat</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The date time property value</description>
+    <name>AD_DateTimeValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="10" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>&lt;BIGDECIMAL&gt;The decimal property value</description>
+    <name>AD_DecimalValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The duration property value</description>
+    <name>AD_DurationValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>The equipment entity identifier</description>
+    <name>AD_EquipEntityId</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The long property value</description>
+    <name>AD_LongValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="10" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>The measured value property value</description>
+    <name>AD_MeasuredValueValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>The configured property</description>
+    <name>AD_Property</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>The string property value</description>
+    <name>AD_StringValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of creation of this AT object</description>
+    <name>X_creationSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_RtPhase" referenced-type="64" text-length="0">
+    <description>Reference to runtime phase</description>
+    <name>X_parent</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_RtPhase" referenced-type="64" text-length="0">
+        <description>Reference to runtime phase</description>
+        <name>X_parent</name>
+      </column>
+    </column-info>
+    <description>Index for X_parent column</description>
+    <name>AD_PhDatEQUIP0100</name>
+  </at-index-definitions>
+  <description>Runtime phase data for PhaseLib &lt;Set Multiple Equipment (AD) [1.0]&gt;</description>
+  <name>AD_PhDatEQUIP0100</name>
+</DATDefinition>
+

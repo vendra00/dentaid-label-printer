@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATRow at-definition-key="ATDefinition-X_BuildingBlock2ParamClass" parent-key="0" purge-status="false" type="3">
+  <data-cells data-type="4" referenced-type="0">
+    <name>X_bbType</name>
+    <value>MESPhaseLib</value>
+  </data-cells>
+  <data-cells data-type="4" referenced-type="0">
+    <name>X_identifier</name>
+    <value>Label value</value>
+  </data-cells>
+  <data-cells data-type="2" referenced-type="0">
+    <name>X_index</name>
+    <value>3</value>
+  </data-cells>
+  <data-cells data-type="8" referenced-type="64">
+    <name>X_paramClass</name>
+    <value>ATRow-X_ParameterClass__18F4F90C-E9E5-38C0-69EF-881D38684B4C_</value>
+  </data-cells>
+  <data-cells data-type="8" referenced-type="64">
+    <name>X_phaseLibRef</name>
+    <value>ATRow-X_PhaseLib__21A976B7-D82B-2E45-94E2-74F933C8041E_</value>
+  </data-cells>
+  <name>{624366AE-DFB6-890F-C82F-E2E5DCC8A904}</name>
+</DATRow>
+

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PhaseLibDescription>
+    <OutputDir>C:\Rockwell\10.02.00-PharmaSuite-FTPSACT-CD\FTPS_SDK\apps\yourproject\src\com\adasoft\phase</OutputDir>
+    <Name>Set Multiple Equipment (AD) [1.0]</Name>
+    <Description>Set multiple equipment runtime properties of an s88 equipment entity</Description>
+    <PackageName>com.adasoft.phase.equipment</PackageName>
+    <PhaseLibBaseName>EQUIP0100</PhaseLibBaseName>
+    <VisibleInNavigator value="true" />
+    <InternalBuildingBlock value="false" />
+    <ReportDesignName>PS-BatchReport-MultiEquipment_0100</ReportDesignName>
+    <SupportExceptions value="true" />
+    <MaterialInputMin>0</MaterialInputMin>
+    <MaterialInputMax>0</MaterialInputMax>
+    <MaterialOutputMin>0</MaterialOutputMin>
+    <MaterialOutputMax>0</MaterialOutputMax>
+    <ATDefinitionPrefix>AD_</ATDefinitionPrefix>
+    <UsageContext>All</UsageContext>
+    <ParameterClasses>
+        <ParameterClass>
+            <Name>Instruction (RS) [3.0]</Name>
+            <UsageIdentifier>Instruction</UsageIdentifier>
+            <SortIndex>1</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>EQ Object (RS) [1.0]</Name>
+            <UsageIdentifier>Identified equipment entity</UsageIdentifier>
+            <SortIndex>2</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>Exception Definition (RS) [3.0]</Name>
+            <UsageIdentifier>Mismatching property</UsageIdentifier>
+            <SortIndex>3</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>Phase Completion Mode (RS) [2.0]</Name>
+            <UsageIdentifier>Mode</UsageIdentifier>
+            <SortIndex>4</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>Multiple Properties Hidden Phase Configuration (RDL) [1.0]</Name>
+            <UsageIdentifier>Hidden phase configuration</UsageIdentifier>
+            <SortIndex>5</SortIndex>
+        </ParameterClass>
+
+    </ParameterClasses>
+    <DynamicParameterClasses>
+        <MaximumNumber>50</MaximumNumber>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>Boolean</UsageIdentifier>
+        </DynamicParameterClass>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>DateTime</UsageIdentifier>
+        </DynamicParameterClass>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>Decimal</UsageIdentifier>
+        </DynamicParameterClass>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>Duration</UsageIdentifier>
+        </DynamicParameterClass>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>Long</UsageIdentifier>
+        </DynamicParameterClass>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>MeasuredValue</UsageIdentifier>
+        </DynamicParameterClass>
+        <DynamicParameterClass>
+            <Name>Master Bundle Identifier Description (RDL) [1.0]</Name>
+            <UsageIdentifier>String</UsageIdentifier>
+        </DynamicParameterClass>
+    </DynamicParameterClasses>
+</PhaseLibDescription>

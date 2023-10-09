@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PhaseLibDescription>
+    <OutputDir>C:\Rockwell\10.02.00-PharmaSuite-FTPSACT-CD\FTPS_SDK\apps\yourproject\src\com\adasoft\phase</OutputDir>
+    <Name>RESTFUL Phase (AD) [1.0]</Name>
+    <Description>The Request phase allows to send a request via rest (GET, POST, DELETE, PUT, UPDATE).</Description>
+    <PackageName>com.adasoft.phase.rest</PackageName>
+    <PhaseLibBaseName>Rest0100</PhaseLibBaseName>
+    <VisibleInNavigator value="true" />
+    <InternalBuildingBlock value="false" />
+    <ReportDesignName>PS-BatchReport-PhaseRest_0100</ReportDesignName>
+    <SupportExceptions value="true" />
+    <MaterialInputMin>0</MaterialInputMin>
+    <MaterialInputMax>0</MaterialInputMax>
+    <MaterialOutputMin>0</MaterialOutputMin>
+    <MaterialOutputMax>0</MaterialOutputMax>
+    <ATDefinitionPrefix>AD_</ATDefinitionPrefix>
+    <UsageContext>All</UsageContext>
+    <ParameterClasses>
+        <ParameterClass>
+            <Name>Plain Instruction (RS) [1.0]</Name>
+            <UsageIdentifier>RESTful Call</UsageIdentifier>         
+            <SortIndex>1</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>Plain Instruction (RS) [1.0]</Name>
+            <UsageIdentifier>URL</UsageIdentifier>
+            <SortIndex>2</SortIndex>
+        </ParameterClass>         
+    </ParameterClasses>
+    <DynamicParameterClasses>
+        <MaximumNumber>50</MaximumNumber> 
+         <DynamicParameterClass>
+            <Name>String Key Value Pair(RS) [1.0]</Name>            
+            <UsageIdentifier>String</UsageIdentifier>
+        </DynamicParameterClass>   
+        <DynamicParameterClass>
+            <Name>BigDecimal Key Value Pair(RS) [1.0]</Name>            
+            <UsageIdentifier>BigDecimal</UsageIdentifier>
+        </DynamicParameterClass>  
+        <DynamicParameterClass>
+            <Name>Boolean Key Value Pair(RS) [1.0]</Name>            
+            <UsageIdentifier>Boolean</UsageIdentifier>
+        </DynamicParameterClass>                                                                          
+        <DynamicParameterClass>
+            <Name>Timestamp Key Value Pair(RS) [1.0]</Name>            
+            <UsageIdentifier>Timestamp</UsageIdentifier>
+        </DynamicParameterClass>
+   </DynamicParameterClasses>
+</PhaseLibDescription>

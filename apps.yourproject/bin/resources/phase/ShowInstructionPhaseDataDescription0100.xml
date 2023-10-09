@@ -1,0 +1,23 @@
+<RtPhaseDataAttributes>
+	<RtPhaseDataAttribute>
+		<Name>Name</Name>
+		<Description>The label name</Description>
+		<DataType>
+			<String length="2000"/>
+		</DataType>
+	</RtPhaseDataAttribute>
+	<RtPhaseDataAttribute>
+		<Name>Description</Name>
+		<Description>The description for a label</Description>
+		<DataType>
+			<String length="2000"/>
+		</DataType>
+	</RtPhaseDataAttribute>
+	<RtPhaseDataAttribute>
+		<Name>Value</Name>
+		<Description>The value for a label</Description>
+		<DataType>
+			<Decimal/>
+		</DataType>
+	</RtPhaseDataAttribute>
+</RtPhaseDataAttributes>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<configuration>
+    <WDOrderStepInputService>
+        <implementationClass>com.rockwell.custmes.service.EnhancedWDOrderStepInputService</implementationClass>
+    </WDOrderStepInputService>
+	<OrderStepExecutionService>
+        <implementationClass>com.rockwell.custmes.service.EnhancedWIPOrderStepInputService</implementationClass>
+    </OrderStepExecutionService>
+    <SublotReplacementHelper>
+        <implementationClass>
+            com.rockwell.mes.services.wd.impl.replacement.SublotReplacementHelper
+        </implementationClass>
+    </SublotReplacementHelper>
+    <CheckSublotStatusPrepared>
+        <implementationClass>
+            com.rockwell.mes.services.wd.impl.checks.CheckSublotStatusPrepared
+        </implementationClass>
+    </CheckSublotStatusPrepared>
+    <CheckSublotStatusRecorded>
+        <implementationClass>
+            com.rockwell.mes.services.wd.impl.checks.CheckSublotStatusRecorded
+        </implementationClass>
+    </CheckSublotStatusRecorded>
+    <CheckSublotIsProducedForOSO>
+        <implementationClass>
+            com.rockwell.mes.services.wd.impl.checks.CheckSublotIsProducedForOSO
+        </implementationClass>
+    </CheckSublotIsProducedForOSO>
+    <CheckContainerIsPreparedForOSO>
+        <implementationClass>
+            com.rockwell.mes.services.wd.impl.checks.CheckContainerIsPreparedForOSO
+        </implementationClass>
+    </CheckContainerIsPreparedForOSO>
+    <CheckContainerIsRecordedForOSO>
+        <implementationClass>
+            com.rockwell.mes.services.wd.impl.checks.CheckContainerIsRecordedForOSO
+        </implementationClass>
+    </CheckContainerIsRecordedForOSO>
+</configuration>

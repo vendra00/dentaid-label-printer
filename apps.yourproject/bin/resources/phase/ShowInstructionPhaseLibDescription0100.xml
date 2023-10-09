@@ -1,0 +1,32 @@
+<PhaseLibDescription>
+	 <OutputDir>C:\Rockwell\10.02.00-PharmaSuite-FTPSACT-CD\FTPS_SDK\apps\yourproject\src\com\adasoft\gv\phase\product</OutputDir>
+	 <Name>Label Generator (GV) [1.0]</Name>
+	 <Description>Label generator with attributes</Description>
+	 <PackageName>com.adasoft.gv.phase.product.labelgenerator</PackageName>
+	 <PhaseLibBaseName>LabelGen0100</PhaseLibBaseName>
+	 <VisibleInNavigator value="true"/>
+	 <InternalBuildingBlock value="false"/>
+	 <MaterialInputMin>0</MaterialInputMin>
+	 <MaterialInputMax>0</MaterialInputMax>
+	 <MaterialOutputMin>0</MaterialOutputMin>
+	 <MaterialOutputMax>0</MaterialOutputMax>
+	 <ATDefinitionPrefix>GV</ATDefinitionPrefix>
+	 <UsageContext>All</UsageContext>
+	 <ParameterClasses>
+		<ParameterClass>
+			<Name>String Value (RS) [1.0]</Name>
+			<UsageIdentifier>Label name</UsageIdentifier>
+			<SortIndex>1</SortIndex>
+		</ParameterClass>
+		<ParameterClass>
+			<Name>String Value (RS) [1.0]</Name>
+			<UsageIdentifier>Label description</UsageIdentifier>
+			<SortIndex>2</SortIndex>
+		</ParameterClass>
+		<ParameterClass>
+			<Name>String Value (RS) [1.0]</Name>
+			<UsageIdentifier>Label value</UsageIdentifier>
+			<SortIndex>3</SortIndex>
+		</ParameterClass>
+	 </ParameterClasses>
+</PhaseLibDescription>

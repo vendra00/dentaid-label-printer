@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="0" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="false" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="9" nullable="false" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>1</default-value>
+    <description>Runtime phase was executed automatically</description>
+    <name>X_automatic</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Null or time at which phase has been completed</description>
+    <name>X_completed</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of completion of runtime phases</description>
+    <name>X_completionSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="0" referenced-type="48" text-length="0">
+    <description>Reference to the user who has completed the phase</description>
+    <name>X_completionUser</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="7" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The context of this runtime phase as serialized blob</description>
+    <name>X_contextData</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of creation of this AT object</description>
+    <name>X_creationSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>Device identifier</description>
+    <name>X_deviceIdentifier</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="7" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>BLOB which contains information about requested and/or already signed exceptions for this runtime phase</description>
+    <name>X_exceptionState</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>false</default-value>
+    <description>Flag to determine whether a hidden phase has recorded exceptions. In this case the phase needs to be displayed to make these exceptiond visible for review.</description>
+    <name>X_hiddenWithException</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>false</default-value>
+    <description>Flag to determine whether the phase will be hidden after completion. It will not be displayed as completed in the execution, in the navigator view and in the batch report.</description>
+    <name>X_hideAfterCompletion</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="false" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Instance number of phase being executed within an operation</description>
+    <name>X_instanceCount</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="false" referenced-key="ATDefinition-X_RtOperation" referenced-type="64" text-length="0">
+    <description>Reference to the parent recipe entity</description>
+    <name>X_parent</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_Phase" referenced-type="64" text-length="0">
+    <description>Reference to master recipe entity (phase) - contains configuration. Null in case of basic building block.</description>
+    <name>X_phase</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>false</default-value>
+    <description>&lt;protected&gt;Flag to determine whether this is a reactivated phase.</description>
+    <name>X_reactivated</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Softreference to X_RtOpStation2RAS, referenced object might be deleted without nulling this column.</description>
+    <name>X_rtOpStationRef</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Starting time of phase, may be earlier than creation time</description>
+    <name>X_started</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="false" referenced-key="0" referenced-type="38" text-length="0">
+    <description>Station on which the phase has been executed</description>
+    <name>X_station</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;CL: PhaseTerminationReason</description>
+    <name>X_terminateReasonChoice</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="51" text-length="0">
+    <description>Workcenter on which the phase has been executed</description>
+    <name>X_workCenter</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_Phase" referenced-type="64" text-length="0">
+        <description>Reference to master recipe entity (phase) - contains configuration. Null in case of basic building block.</description>
+        <name>X_phase</name>
+      </column>
+    </column-info>
+    <description>Access by phase</description>
+    <name>X_RtPhase_RefPhase</name>
+  </at-index-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="false" referenced-key="0" referenced-type="38" text-length="0">
+        <description>Station on which the phase has been executed</description>
+        <name>X_station</name>
+      </column>
+    </column-info>
+    <description>Access by station</description>
+    <name>X_RtPhase_RefStation</name>
+  </at-index-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="false" referenced-key="ATDefinition-X_RtOperation" referenced-type="64" text-length="0">
+        <description>Reference to the parent recipe entity</description>
+        <name>X_parent</name>
+      </column>
+    </column-info>
+    <description>Fasten top down query</description>
+    <name>X_parentRtOperation</name>
+  </at-index-definitions>
+  <description>Control recipe representation of phase (runtime phase)</description>
+  <name>X_RtPhase</name>
+  <parameters data-type="2" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>LRUSize</name>
+    <user-defined-attributes />
+    <value>0</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>baseClass</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88.impl.execution.AbstractRuntimeEntity</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>libName</name>
+    <user-defined-attributes />
+    <value>execution</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>packagePrefix</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>publishedAPI</name>
+    <user-defined-attributes />
+    <value>false</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>useCache</name>
+    <user-defined-attributes />
+    <value>true</value>
+  </parameters>
+</DATDefinition>
+

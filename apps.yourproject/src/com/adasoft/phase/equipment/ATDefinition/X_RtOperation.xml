@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="0" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="false" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Time at which runtime operation has been completed</description>
+    <name>X_completed</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of completion of this runtime operation</description>
+    <name>X_completionSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="7" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The context of this runtime operation as serialized blob</description>
+    <name>X_contextData</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Sequence index that specifies the order of creation of this AT object</description>
+    <name>X_creationSeqIndex</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The runtime operation will not be resumed on OES restart, because it was manulally held by admin console. It can only be resumed by resume() via admin console</description>
+    <name>X_ignoreOnOESRestart</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="false" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Instance number of operation being executed within a unit procedure</description>
+    <name>X_instanceCount</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_Operation" referenced-type="64" text-length="0">
+    <description>Reference to master recipe entity (operation)- contains configuration. Null in case of W&amp;D.</description>
+    <name>X_operation</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_OperationRtTemplate" referenced-type="64" text-length="0">
+    <description>Reference to runtime template instance of operation in case this instance belongs to such a template instance</description>
+    <name>X_operationRtTemplate</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_RtUnitProcedure" referenced-type="64" text-length="0">
+    <description>Reference to the parent recipe entity</description>
+    <name>X_parent</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>CL: S88RuntimeEntityState</description>
+    <name>X_state</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="38" text-length="0">
+    <description>Reference to station that started this operation</description>
+    <name>X_station</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_Operation" referenced-type="64" text-length="0">
+        <description>Reference to master recipe entity (operation)- contains configuration. Null in case of W&amp;D.</description>
+        <name>X_operation</name>
+      </column>
+    </column-info>
+    <description>Fasten top down query</description>
+    <name>X_RtOp_RefOperation</name>
+  </at-index-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_RtUnitProcedure" referenced-type="64" text-length="0">
+        <description>Reference to the parent recipe entity</description>
+        <name>X_parent</name>
+      </column>
+    </column-info>
+    <description>Fasten top down query</description>
+    <name>X_parentRtUnitProcedure</name>
+  </at-index-definitions>
+  <description>Control recipe representation of operation (runtime operation</description>
+  <name>X_RtOperation</name>
+  <parameters data-type="2" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>LRUSize</name>
+    <user-defined-attributes />
+    <value>0</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>baseClass</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88.impl.execution.AbstractRuntimeEntity</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>libName</name>
+    <user-defined-attributes />
+    <value>execution</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>packagePrefix</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>publishedAPI</name>
+    <user-defined-attributes />
+    <value>false</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>useCache</name>
+    <user-defined-attributes />
+    <value>true</value>
+  </parameters>
+</DATDefinition>
+

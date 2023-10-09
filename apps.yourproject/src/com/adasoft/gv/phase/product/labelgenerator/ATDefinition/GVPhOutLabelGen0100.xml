@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="1" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="true" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>The label output description</description>
+    <name>GVDescription</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>The label output name</description>
+    <name>GVName</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="256">
+    <description>The label output value</description>
+    <name>GVValue</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_RtPhase" referenced-type="64" text-length="0">
+    <description>Reference to runtime phase</description>
+    <name>X_parent</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_RtPhase" referenced-type="64" text-length="0">
+        <description>Reference to runtime phase</description>
+        <name>X_parent</name>
+      </column>
+    </column-info>
+    <description>Index for X_parent column</description>
+    <name>GVPhOutLabelGen0100</name>
+  </at-index-definitions>
+  <description>Phase output for PhaseLib &lt;Label Generator (GV) [1.0]&gt;</description>
+  <name>GVPhOutLabelGen0100</name>
+</DATDefinition>
+

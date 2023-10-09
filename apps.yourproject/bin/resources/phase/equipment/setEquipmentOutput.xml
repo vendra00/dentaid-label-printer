@@ -1,0 +1,27 @@
+<PhaseOutputDescription>
+    <PhaseOutput>
+        <Name>Values</Name>
+        <DisplayName>Values</DisplayName>
+        <Description>Configured properties with new properties values</Description>
+        <DataType>
+            <Binary/>
+        </DataType>
+    </PhaseOutput>
+    <PhaseOutput>
+        <Name>EquipmentEntity</Name>
+        <DisplayName>Equipment Entity</DisplayName>
+        <Description>Identified equipment entity</Description>
+        <DataType>
+            <ApplicationTable name="X_S88Equipment" interfaceClassName="com.rockwell.mes.services.s88equipment.ifc.IMESS88Equipment"
+                              implClassName="com.rockwell.mes.services.s88equipment.impl.MESS88Equipment" />
+        </DataType>
+    </PhaseOutput>
+    <PhaseOutput>
+        <Name>ExceptionRecorded</Name>
+        <DisplayName>Exception recorded</DisplayName>
+        <Description>Flag for recorded exception</Description>
+        <DataType>
+            <Bool/>
+        </DataType>
+    </PhaseOutput>
+</PhaseOutputDescription>

@@ -1,0 +1,513 @@
+package com.rockwell.mes.myeig.data;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.rockwell.integration.messaging.BasePayload;
+
+/**
+ * Order transfer bean. Used to create a process orders in PharmaSuite
+ * <p>
+ * 
+ * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc. All
+ *         Rights Reserved.
+ */
+public class OrderTransferObject extends BasePayload implements Serializable {
+
+    /** The <code>serialVersionUID</code> */
+    private static final long serialVersionUID = 8845248952380834188L;
+
+    /** the IDoc document number or message id */
+    private String idoc;
+
+    /** the order number */
+    private String orderNumber;
+
+    /** the part number (product) */
+    private String partNumber;
+
+    /** the quantity produced */
+    private String quantity;
+
+    /** the quantity unit of measure */
+    private String quantityUom;
+
+    /** the start date */
+    private String erpStartDate;
+
+    /** the finish date */
+    private String erpFinishDate;
+    
+    /** the site */
+    private String site;
+    
+	/** the warehouse */
+    private List<OrderWarehouse> warehouses = new ArrayList<OrderWarehouse>();
+
+	/** the production version */
+    private String productionVersion;
+
+    /** the route map */
+    private String routeMap;
+
+    /** the batch */
+    private String batch;
+    
+    /** the batch status marker*/
+    private String batchStatusMarker;
+
+    /** List of order sequences */
+    private List<OrderSequence> orderSequences = new ArrayList<OrderSequence>();
+
+    /** List of status transitions */
+    private List<OrderStatusTransition> orderStatusTransitions = new ArrayList<OrderStatusTransition>();
+    
+    /**
+     * @return Returns the IDoc document number
+     */
+    public String getIdoc() {
+        return idoc;
+    }
+
+    /**
+     * @param idoc Sets the IDoc document number
+     */
+    public void setIdoc(final String idoc) {
+        this.idoc = idoc;
+    }
+
+    /**
+     * @return Returns the orderNumber.
+     */
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    /**
+     * @param orderNumber The orderNumber to set.
+     */
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    /**
+     * @return Returns the partNumber.
+     */
+    public String getPartNumber() {
+        return partNumber;
+    }
+
+    /**
+     * @param partNumber The partNumber to set.
+     */
+    public void setPartNumber(String partNumber) {
+        this.partNumber = partNumber;
+    }
+
+    /**
+     * @return Returns the quantity.
+     */
+    public String getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * @param quantity The quantity to set.
+     */
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    /**
+     * @return Returns the quantityUom.
+     */
+    public String getQuantityUom() {
+        return quantityUom;
+    }
+
+    /**
+     * @param quantityUom The quantityUom to set.
+     */
+    public void setQuantityUom(String quantityUom) {
+        this.quantityUom = quantityUom;
+    }
+
+    /**
+     * @return Returns the erpStartDate.
+     */
+    public String getErpStartDate() {
+        return erpStartDate;
+    }
+
+    /**
+     * @param erpStartDate The erpStartDate to set.
+     */
+    public void setErpStartDate(String erpStartDate) {
+        this.erpStartDate = erpStartDate;
+    }
+
+    /**
+     * @return Returns the erpFinishDate.
+     */
+    public String getErpFinishDate() {
+        return erpFinishDate;
+    }
+
+    /**
+     * @param erpFinishDate The erpFinishDate to set.
+     */
+    public void setErpFinishDate(String erpFinishDate) {
+        this.erpFinishDate = erpFinishDate;
+    }
+    
+    public String getSite() {
+		return site;
+	}
+
+	public void setSite(String site) {
+		this.site = site;
+	}
+	
+	public List<OrderWarehouse> getWarehouses() {
+		return warehouses;
+	}
+
+	public void setWarehouses(List<OrderWarehouse> warehouses) {
+		this.warehouses = warehouses;
+	}
+
+    /**
+     * @return Returns the productionVersion.
+     */
+    public String getProductionVersion() {
+        return productionVersion;
+    }
+
+    /**
+     * @param productionVersion The productionVersion to set.
+     */
+    public void setProductionVersion(String productionVersion) {
+        this.productionVersion = productionVersion;
+    }
+
+    /**
+     * @return Returns the routeMap.
+     */
+    public String getRouteMap() {
+        return routeMap;
+    }
+
+    /**
+     * @param productionVersion The routeMap to set.
+     */
+    public void setRouteMap(String routeMap) {
+        this.routeMap = routeMap;
+    }
+
+    /**
+     * @return Returns the batch.
+     */
+    public String getBatch() {
+        return batch;
+    }
+
+    /**
+     * @param productionVersion The batch to set.
+     */
+    public void setBatch(String batch) {
+        this.batch = batch;
+    }
+    
+    /**
+     * @return Returns the batch status marker.
+     */
+    public String getBatchStatusMarker() {
+		return batchStatusMarker;
+	}
+    
+    /**
+     * @param batchStatusMarker The batch status marker to set.
+     */
+	public void setBatchStatusMarker(String batchStatusMarker) {
+		this.batchStatusMarker = batchStatusMarker;
+	}
+    
+    /**
+     * @return Returns the list of orderSequences
+     */
+    public List<OrderSequence> getOrderSequences() {
+        return orderSequences;
+    }
+
+    /**
+     * @param orderSequences Sets the list of orderSequences
+     */
+    public void setOrderSequences(final List<OrderSequence> orderSequences) {
+        this.orderSequences = orderSequences;
+    }
+
+    /**
+     * @return Returns the list of orderStatusTransitions
+     */
+    public List<OrderStatusTransition> getOrderStatusTransitions() {
+        return orderStatusTransitions;
+    }
+
+    /**
+     * @param orderStatusTransitions Sets the list of orderStatusTransitions
+     */
+    public void setOrderStatusTransitions(final List<OrderStatusTransition> orderStatusTransitions) {
+        this.orderStatusTransitions = orderStatusTransitions;
+    }
+
+    /**
+     * Order sequences bean
+     * <p>
+     * 
+     * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc.
+     *         All Rights Reserved.
+     */
+    public static class OrderSequence implements Serializable {
+
+        /** The <code>serialVersionUID</code> */
+        private static final long serialVersionUID = 1L;
+
+        /** List of order process */
+        private List<OrderProcess> orderProcesses = new ArrayList<OrderProcess>();
+
+        /**
+         * @return Returns the list of order processes
+         */
+        public List<OrderProcess> getOrderProcesses() {
+            return orderProcesses;
+        }
+
+        /**
+         * @param orderProcess Sets the list of order processes
+         */
+        public void setOrderProcesses(final List<OrderProcess> orderProcesses) {
+            this.orderProcesses = orderProcesses;
+        }
+    }
+    
+    /**
+     * Order process bean
+     * <p>
+     * 
+     * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc.
+     *         All Rights Reserved.
+     */
+    public static class OrderProcess implements Serializable {
+
+        /** The <code>serialVersionUID</code> */
+        private static final long serialVersionUID = 1L;
+
+        /** List of order reservations */
+        private List<OrderReservation> orderReservations = new ArrayList<OrderReservation>();
+
+        /**
+         * @return Returns the list of order reservations
+         */
+        public List<OrderReservation> getOrderReservations() {
+            return orderReservations;
+        }
+
+        /**
+         * @param orderReservations Sets the list of order reservations
+         */
+        public void setOrderReservations(final List<OrderReservation> orderReservations) {
+            this.orderReservations = orderReservations;
+        }
+    }
+
+
+    /**
+     * Order reservation requirements bean
+     * <p>
+     * 
+     * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc.
+     *         All Rights Reserved.
+     */
+    public static class OrderReservation implements Serializable {
+
+        /** The <code>serialVersionUID</code> */
+        private static final long serialVersionUID = 1L;
+
+        /** the position */
+        private String position;
+
+        /** the part number */
+        private String partNumber;
+
+        /** the planned quantity */
+        private String plannedQuantity;
+
+        /** the planned quantity unit of measure */
+        private String plannedQuantityUom;
+
+        /** the batch number */
+        private String batchName;
+
+        /** the plant */
+        private String plant;
+
+		/** the storage location */
+        private String storageLocation;
+        
+        /**
+         * @return Returns the position
+         */
+        public String getPosition() {
+            return position;
+        }
+
+        /**
+         * @param position Sets the position
+         */
+        public void setPosition(final String position) {
+            this.position = position;
+        }
+
+        /**
+         * @return Returns the partNumber.
+         */
+        public String getPartNumber() {
+            return partNumber;
+        }
+
+        /**
+         * @param partNumber The partNumber to set.
+         */
+        public void setPartNumber(String partNumber) {
+            this.partNumber = partNumber;
+        }
+
+        /**
+         * @return Returns the plannedQuantity.
+         */
+        public String getPlannedQuantity() {
+            return plannedQuantity;
+        }
+
+        /**
+         * @param plannedQuantity The plannedQuantity to set.
+         */
+        public void setPlannedQuantity(String plannedQuantity) {
+            this.plannedQuantity = plannedQuantity;
+        }
+
+        /**
+         * @return Returns the plannedQuantityUom.
+         */
+        public String getPlannedQuantityUom() {
+            return plannedQuantityUom;
+        }
+
+        /**
+         * @param plannedQuantityUom The plannedQuantityUom to set.
+         */
+        public void setPlannedQuantityUom(String plannedQuantityUom) {
+            this.plannedQuantityUom = plannedQuantityUom;
+        }
+
+        /**
+         * @return Returns the batchName.
+         */
+        public String getBatchName() {
+            return batchName;
+        }
+
+        /**
+         * @param batchName The batchName to set.
+         */
+        public void setBatchName(String batchName) {
+            this.batchName = batchName;
+        }
+        
+        /**
+         * @return Returns the plant.
+         */
+        public String getPlant() {
+			return plant;
+		}
+
+        /**
+         * @param plant The plant to set.
+         */
+		public void setPlant(String plant) {
+			this.plant = plant;
+		}
+
+        /**
+         * @return Returns the storageLocation.
+         */		
+		public String getStorageLocation() {
+			return storageLocation;
+		}
+
+        /**
+         * @param storageLocation The storageLocation to set.
+         */
+		public void setStorageLocation(String storageLocation) {
+			this.storageLocation = storageLocation;
+		}
+
+    }
+
+    /**
+     * Order reservation requirements bean
+     * <p>
+     * 
+     * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc.
+     *         All Rights Reserved.
+     */
+    public static class OrderStatusTransition implements Serializable {
+
+        /** The <code>serialVersionUID</code> */
+        private static final long serialVersionUID = 1L;
+
+        /** the transition */
+        private String transition;
+
+        /**
+         * @return Returns the transition
+         */
+        public String getTransition() {
+            return transition;
+        }
+
+        /**
+         * @param transition Sets the transition
+         */
+        public void setTransition(final String transition) {
+            this.transition = transition;
+        }
+    }
+    
+    /**
+     * Order warehouse bean
+     * <p>
+     * 
+     * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc.
+     *         All Rights Reserved.
+     */
+    public static class OrderWarehouse implements Serializable {
+
+        /** The <code>serialVersionUID</code> */
+        private static final long serialVersionUID = 1L;
+
+        /** the transition */
+        private String warehouse;
+
+		public String getWarehouse() {
+			return warehouse;
+		}
+
+		public void setWarehouse(String warehouse) {
+			this.warehouse = warehouse;
+		}
+
+    }
+
+}

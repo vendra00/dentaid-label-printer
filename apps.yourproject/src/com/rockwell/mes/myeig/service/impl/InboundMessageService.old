@@ -1,0 +1,958 @@
+package com.rockwell.mes.myeig.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.jms.JMSException;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.datasweep.compatibility.client.Batch;
+import com.datasweep.compatibility.client.ControlRecipe;
+import com.datasweep.compatibility.client.DatasweepException;
+import com.datasweep.compatibility.client.INamedUDA;
+import com.datasweep.compatibility.client.Location;
+import com.datasweep.compatibility.client.MasterRecipe;
+import com.datasweep.compatibility.client.MeasuredValue;
+import com.datasweep.compatibility.client.OrderStep;
+import com.datasweep.compatibility.client.OrderStepInput;
+import com.datasweep.compatibility.client.Part;
+import com.datasweep.compatibility.client.ProcessOrder;
+import com.datasweep.compatibility.client.ProcessOrderItem;
+import com.datasweep.compatibility.client.Sublot;
+import com.datasweep.compatibility.client.UnitOfMeasure;
+import com.rockwell.custmes.ftps.service.ifc.IEnhancedOrderExplosionService;
+import com.rockwell.mes.commons.base.ifc.configuration.MESConfiguration;
+import com.rockwell.mes.commons.base.ifc.exceptions.MESException;
+import com.rockwell.mes.commons.base.ifc.exceptions.MESRuntimeException;
+import com.rockwell.mes.commons.base.ifc.functional.MeasuredValueUtilities;
+import com.rockwell.mes.commons.base.ifc.nameduda.MESNamedUDAOrderStepInput;
+import com.rockwell.mes.commons.base.ifc.nameduda.MESNamedUDAPart;
+import com.rockwell.mes.commons.base.ifc.nameduda.MESNamedUDAProcessOrderItem;
+import com.rockwell.mes.commons.base.ifc.services.PCContext;
+import com.rockwell.mes.commons.base.ifc.services.ServiceFactory;
+import com.rockwell.mes.commons.base.ifc.services.Transactional;
+import com.rockwell.mes.commons.messaging.ifc.MessagingActivity;
+import com.rockwell.mes.commons.versioning.ifc.VersionControlUtility;
+import com.rockwell.mes.myeig.service.ifc.ErpSublotWrapper;
+import com.rockwell.mes.myeig.service.ifc.ErpEquipmentWrapper;
+import com.rockwell.mes.myeig.service.ifc.ErpOrderBuilder;
+import com.rockwell.mes.myeig.service.ifc.ErpOrderBuilder.ErpOrderItemBuilder;
+import com.rockwell.mes.myeig.service.ifc.IInboundMessageService;
+import com.rockwell.mes.myeig.utility.TransactionalJob;
+import com.rockwell.mes.services.commons.ifc.order.ProcessOrderItemFSMConstants;
+import com.rockwell.mes.services.inventory.ifc.BatchBuilder;
+import com.rockwell.mes.services.inventory.ifc.IBatchService;
+import com.rockwell.mes.services.inventory.ifc.IMatMgmtSupportService;
+import com.rockwell.mes.services.inventory.ifc.ISublotService;
+import com.rockwell.mes.services.inventory.ifc.TransactionHistoryContext;
+import com.rockwell.mes.services.inventory.impl.MESBatchAllocation;
+import com.rockwell.mes.services.order.ifc.IMESOrderService;
+import com.rockwell.mes.services.order.ifc.IOrderExplosionService;
+import com.rockwell.mes.services.order.ifc.OrderUtils;
+import com.rockwell.mes.services.recipe.ifc.IMESRecipeService;
+import com.rockwell.mes.services.s88.ifc.IS88RecipeService;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESERPBomHeader;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESERPBomItem;
+import com.rockwell.mes.services.s88.impl.recipe.MESERPBomItemFilter;
+import com.rockwell.mes.services.s88equipment.ifc.IS88EquipmentService;
+import com.rockwell.mes.services.s88equipment.ifc.IMESS88Equipment;
+import com.rockwell.mes.services.s88equipment.ifc.IMESS88EquipmentClass;
+import com.rockwell.mes.services.s88.ifc.IS88EquipmentExecutionService;
+import com.rockwell.mes.services.s88equipment.ifc.statusgraph.IMESS88StatusGraph;
+import com.rockwell.mes.services.s88equipment.ifc.statusgraph.IMESS88StatusGraphAssignment;
+import com.rockwell.mes.services.s88.ifc.execution.equipment.statusgraph.IS88StatusGraphFireTriggerResult;
+
+
+/**
+ * This service provides functionality for interface processing.
+ * <p>
+ *
+ * @author syim, (c) Copyright 2012 Rockwell Automation Solutions, Inc. All Rights Reserved.
+ */
+public class InboundMessageService extends ErpMessageService implements IInboundMessageService {
+
+    /** logger */
+    private static final Log LOGGER = LogFactory.getLog(InboundMessageService.class);
+
+    /** The category for MES parts */
+    private static final String CATEGORY_MES = "MES";
+
+    /** The default consumption type for parts */
+    private static final String CONSUMPTION_TYPE_QTY = "Quantity";
+
+    /** The default equipment class */
+    private static final String DEFAULT_EQUIPMENT_CLASS = "Reactor_TestGMAO_v01";
+
+    /** The equipment graph identifier */
+    private static final String EQUIPMENT_GRAPH_IDENTIFIER = "Test_Graph_GMAO";
+
+    /** The default trigger to be available */
+    private static final String EQUIPMENT_GRAPH_NOT_AVAILABLE_IDENTIFIER = "Not_Available";
+
+    /** The default trigger to be not available */
+    private static final String EQUIPMENT_GRAPH_AVAILABLE_IDENTIFIER = "Available";
+
+    /** The default trigger to be available */
+    private static final String EQUIPMENT_TRIGGER_TO_BE_AVAILABLE = "TO_BE_AVAILABLE";
+
+    /** The default trigger to be not available */
+    private static final String EQUIPMENT_TRIGGER_TO_BE_UNAVAILABLE = "TO_BE_UNAVAILABLE";
+
+    /** The Order Service */
+    private static final IMESOrderService ORDER_SERVICE = ServiceFactory.getService(IMESOrderService.class);
+
+    private static final IEnhancedOrderExplosionService ORDER_EXPLOSION_SERVICE = ServiceFactory
+            .getService(IEnhancedOrderExplosionService.class);
+
+    private static final IMESRecipeService RECIPE_SERVICE = ServiceFactory.getService(IMESRecipeService.class);
+
+    private static final IS88RecipeService S88_RECIPE_SERVICE = ServiceFactory.getService(IS88RecipeService.class);
+
+    private static final IBatchService BATCH_SERVICE = ServiceFactory.getService(IBatchService.class);
+
+    private static final ISublotService SUBLOT_SERVICE = ServiceFactory.getService(ISublotService.class);
+
+    private static final IS88EquipmentService S88_EQUIPMENT_SERVICE = ServiceFactory.getService(IS88EquipmentService.class);
+
+    private static final IS88EquipmentExecutionService S88_EQUIPMENT_EXECUTION_SERVICE =
+            ServiceFactory.getService(IS88EquipmentExecutionService.class);
+
+    ProcessOrder processOrder;
+
+    public enum ACTION {
+        UNRELEASE_PO,
+        UNEXPLODED_PO,
+        REMOVE_PO,
+        CREATE_PO,
+        NO_ACTION
+    }
+
+    private List<ACTION> actions = new ArrayList<>();
+
+    @Override
+    @Transactional
+    public void createERPMaterial(String number, String desc, Map<String, Object> udas) throws DatasweepException {
+
+        // Clear the Part Cache
+        PCContext.getServerImpl().getSiteCache().getPartCache().setCacheEnabled(false);
+
+        // check if part already exists
+        Part materialPart = RECIPE_SERVICE.getPart(number);
+
+        if (materialPart == null) { // create material if none exists in FTPS
+            LOGGER.info("Creating new material: " + number);
+            materialPart = RECIPE_SERVICE.createPart(number);
+            materialPart.setCategory(CATEGORY_MES);
+            materialPart.setBomTrackedMode(0); // TRACKEDMODE_EXPLODED
+            materialPart.setConsumptionType(CONSUMPTION_TYPE_QTY);
+            materialPart.setExtendedRevision(VersionControlUtility.DEFAULT_REVISION);
+            materialPart.setRevision(VersionControlUtility.DEFAULT_REVISION);
+            MESNamedUDAPart.setInternal(materialPart, 0L);
+        } else {
+            LOGGER.info("Updating material:  " + number);
+            udas.remove("X_allowedWeighingMethods");
+        }
+
+        materialPart.setDescription(desc);
+
+        // set UDAs of Part
+        setUdasOnObject(materialPart, udas);
+
+        materialPart.Save(null, null, PCContext.getDefaultAccessPrivilege());
+    }
+
+    @Override
+    @Transactional
+    public void createERPBom(Part material, String method, MeasuredValue baseQty, List<Map<String, Object>> items)
+            throws DatasweepException {
+
+        IMESERPBomHeader erpBomHeader = S88_RECIPE_SERVICE.getERPBomHeader(material, Integer.parseInt(method));
+        if (erpBomHeader == null) {
+            LOGGER.info("Creating new ERP Bom: " + material.getPartNumber() + "." + method);
+            erpBomHeader = S88_RECIPE_SERVICE.createERPBomHeader(material, Integer.parseInt(method), baseQty, true);
+        } else {
+            LOGGER.info("Updating ERP Bom: " + material.getPartNumber() + "." + method);
+            // if update, delete BOM positions which are not in the message
+            for (IMESERPBomItem erpBomItem : S88_RECIPE_SERVICE.getERPBomItems(erpBomHeader)) {
+                Boolean posFound = false;
+                for (Map<String, Object> item : items) {
+                    if (erpBomItem.getPosition().equals(item.get("position"))) {
+                        posFound = true;
+                        break;
+                    }
+                }
+                if (!posFound) {
+                    erpBomItem.Delete(null, null, PCContext.getDefaultAccessPrivilege());
+                }
+            }
+            erpBomHeader.setBaseQty(baseQty);
+        }
+
+        erpBomHeader.Save(null, null, PCContext.getDefaultAccessPrivilege());
+
+        // BOM items
+        for (Map<String, Object> item : items) {
+            Part component = (Part) item.get("material");
+            String position = (String) item.get("position");
+            MeasuredValue plannedQty = (MeasuredValue) item.get("plannedQty");
+
+            List<IMESERPBomItem> list = getErpBomItems(erpBomHeader, position);
+            IMESERPBomItem erpBomItem;
+            if (list.size() < 1) { // position does not exist, create it
+                erpBomItem = S88_RECIPE_SERVICE.createERPBomItem(erpBomHeader, component, position, plannedQty);
+            } else { // update
+                erpBomItem = list.get(0);
+                erpBomItem.setMaterial(component);
+                erpBomItem.setPlannedQty(plannedQty);
+            }
+
+            Boolean fixedQty = (Boolean) item.get("fixedQty");
+            erpBomItem.setFixedQty(fixedQty);
+            erpBomItem.Save(null, null, PCContext.getDefaultAccessPrivilege());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void createERPBatch(BatchBuilder builder, String transition) throws DatasweepException, MESException {
+
+        // Clear the Batch Cache
+        PCContext.getServerImpl().getSiteCache().getBatchCache().setCacheEnabled(false);
+
+        String batchNo = builder.getBatchName();
+        String materialNo = builder.getPart().getPartNumber();
+
+        final IBatchService batchSrv = ServiceFactory.getService(IBatchService.class);
+        Batch batch = BATCH_SERVICE.loadBatchByCompoundIdentifier(batchNo, materialNo);
+
+        if (batch == null) { // create the batch if none exists in FTPS
+            LOGGER.info("Creating batch: " + batchNo + " material: " + materialNo);
+            batch = batchSrv.createBatch(builder);
+        } else {
+            LOGGER.info("Updating batch: " + batchNo + " material: " + materialNo);
+
+            TransactionHistoryContext thCtx = new TransactionHistoryContext();
+            thCtx.setRemark(TRANS_HIST_COMMENT);
+            // Update potency & attributes
+            batchSrv.changeBatchAttributes(batch, builder.getPotency(), builder.getUDAMap(), thCtx);
+        }
+
+        // apply status transition, and adjust expiration and retest date
+        batchSrv.applyQualityStatusTransitionWithTxContext2(batch, transition, builder.getExpiryDate(), builder.getRetestDate(), null);
+    }
+
+    @Override
+    @Transactional
+    public void updateERPBatchStatus(BatchBuilder builder, String transition) throws DatasweepException, MESException {
+
+        // Clear the Batch Cache
+        PCContext.getServerImpl().getSiteCache().getBatchCache().setCacheEnabled(false);
+
+        String batchNo = builder.getBatchName();
+        String materialNo = builder.getPart().getPartNumber();
+
+        final IBatchService batchSrv = ServiceFactory.getService(IBatchService.class);
+        Batch batch = BATCH_SERVICE.loadBatchByCompoundIdentifier(batchNo, materialNo);
+
+        // apply status transition
+        if (batch != null)
+            batchSrv.applyQualityStatusTransitionExc(batch, transition);
+        else
+            LOGGER.error(String.format("Batch should not be null!"));
+    }
+
+    // SGO - IMPLEMENTACIÓN DELETE ERP ORDER
+    @Override
+    // @Transactional
+    public synchronized void deleteERPOrder(ErpOrderBuilder builder) throws DatasweepException, MESException {
+
+        // ADASOFT - remove actions list
+        actions.clear();
+
+        String orderNumber = builder.getOrderNumber();
+        processOrder = PCContext.getFunctions().getProcessOrderByName(orderNumber);
+
+        if (processOrder == null) { // not exist
+            LOGGER.info("Process Order " + orderNumber + " does not exist in PharmaSuite. Cannot be deleted.");
+        } else { // delete
+            LOGGER.info("Deleting Order " + orderNumber + " in PharmaSuite");
+            for (Object poiObj : processOrder.getProcessOrderItems()) {
+                // If an order with this order number does exist
+                ProcessOrderItem poi = (ProcessOrderItem) poiObj;
+                String poiStatus = poi.getCurrentState("orderStatus").getState().getName();
+
+                if ("Defined".equals(poiStatus) || "Exploded".equals(poiStatus) || "Released".equals(poiStatus)) {
+                    if ("Released".equals(poiStatus)) {
+                        actions.add(ACTION.UNRELEASE_PO);
+                        actions.add(ACTION.UNEXPLODED_PO);
+                    } else if ("Exploded".equals(poiStatus)) {
+                        actions.add(ACTION.UNEXPLODED_PO);
+                    } // order number does exist, but has not yet been released
+                    actions.add(ACTION.REMOVE_PO);
+
+                } else { // updates only allowed if less than release state
+                    throw new MESRuntimeException("Order " + orderNumber + " already exists in a non-modificable state");
+                }
+            }
+        }
+
+        TransactionalJob<Void> jobRemovePO = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    removeUnreleasedOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback remove Order " + orderNumber, e1);
+                    }
+                    throw new MESRuntimeException("Issue in removing order " + builder.getOrderNumber(), e);
+                }
+                return null;
+            }
+        };
+
+        TransactionalJob<Void> jobUnReleasePO = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    unReleaseProcessOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback unrelease Order " + orderNumber, e1);
+                    }
+                    throw new MESRuntimeException("Issue in unrelease order " + builder.getOrderNumber(), e);
+                }
+                return null;
+            }
+        };
+        TransactionalJob<Void> jobUnExplodePO = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    unExplodeProcessOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback unexplode Order " + orderNumber, e1);
+                    }
+                    throw new MESRuntimeException("Issue in unexplode order " + builder.getOrderNumber(), e);
+                }
+                return null;
+            }
+        };
+
+        for (ACTION action : actions) {
+            switch (action) {
+            case UNRELEASE_PO:
+                jobUnReleasePO.run();
+                break;
+            case UNEXPLODED_PO:
+                jobUnExplodePO.run();
+                break;
+            case REMOVE_PO:
+                jobRemovePO.run();
+                break;
+            case NO_ACTION:
+            default:
+                break;
+            }
+        }
+
+    }
+
+    // SGO - FIN IMPLEMENTACIÓN DELETE ERP ORDER
+
+    @Override
+    // @Transactional
+    public synchronized void createERPOrder(ErpOrderBuilder builder) throws DatasweepException, MESException {
+
+        // ADASOFT - remove actions list
+        actions.clear();
+
+        String orderNumber = builder.getOrderNumber();
+        processOrder = PCContext.getFunctions().getProcessOrderByName(orderNumber);
+
+        if (processOrder == null) { // create
+            LOGGER.info("Creating Order " + orderNumber + " in PharmaSuite");
+            actions.add(ACTION.CREATE_PO);
+
+        } else { // update
+            LOGGER.info("Updating Order " + orderNumber + " in PharmaSuite");
+            for (Object poiObj : processOrder.getProcessOrderItems()) {
+                // If an order with this order number does exist
+                ProcessOrderItem poi = (ProcessOrderItem) poiObj;
+                String poiStatus = poi.getCurrentState("orderStatus").getState().getName();
+
+                if ("Defined".equals(poiStatus) || "Exploded".equals(poiStatus) || "Released".equals(poiStatus)) {
+                    if ("Released".equals(poiStatus)) {
+                        actions.add(ACTION.UNRELEASE_PO);
+                        actions.add(ACTION.UNEXPLODED_PO);
+                    } else if ("Exploded".equals(poiStatus)) {
+                        actions.add(ACTION.UNEXPLODED_PO);
+                    }
+                    // order number does exist, but has not yet been released
+                    actions.add(ACTION.REMOVE_PO);
+                    actions.add(ACTION.CREATE_PO);
+
+                } else { // updates only allowed if less than release state
+                    throw new MESRuntimeException("Order " + orderNumber + " already exists in a non-modificable state");
+                }
+            }
+        }
+
+        TransactionalJob<Void> jobRemovePO = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    removeUnreleasedOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback remove Order " + orderNumber, e1);
+                    }
+                    //throw new MESRuntimeException("Issue in removing order " + builder.getOrderNumber());
+                    throw new MESRuntimeException("Issue in removing order " + builder.getOrderNumber(), e);
+                }
+                return null;
+            }
+        };
+
+        TransactionalJob<Void> jobUnReleasePO = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    unReleaseProcessOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback unrelease Order " + orderNumber, e1);
+                    }
+                    throw new MESRuntimeException("Issue in unrelease order " + builder.getOrderNumber(), e);
+                }
+                return null;
+            }
+        };
+        TransactionalJob<Void> jobUnExplodePO = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    unExplodeProcessOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback unexplode Order " + orderNumber, e1);
+                    }
+                    throw new MESRuntimeException("Issue in unexplode order " + builder.getOrderNumber(), e);
+                }
+                return null;
+            }
+        };
+
+        TransactionalJob<Void> jobCreateOrder = new TransactionalJob<Void>() {
+            @Override
+            protected Void execute() {
+                try {
+                    createProcessOrder(builder);
+                } catch (Throwable e) {
+                    try {
+                        rollback();
+                    } catch (Throwable e1) {
+                        LOGGER.error(ExceptionUtils.getStackTrace(e1));
+                        throw new MESRuntimeException("Issue in rollback create Order " + orderNumber, e1);
+                    }
+                    throw new MESRuntimeException("Issue in create Order " + orderNumber, e);
+                    
+                }
+                return null;
+            }
+        };
+
+
+        for (ACTION action : actions) {
+            switch (action) {
+            case UNRELEASE_PO:
+                jobUnReleasePO.run();
+                break;
+            case UNEXPLODED_PO:
+                jobUnExplodePO.run();
+                break;
+            case REMOVE_PO:
+                jobRemovePO.run();
+                break;
+            case CREATE_PO:
+                jobCreateOrder.run();
+                break;
+            case NO_ACTION:
+            default:
+                break;
+            }
+        }
+
+    }
+
+    /**
+     * Unrelease process Order
+     *
+     * @param processorder
+     * @param messageData  : data of incoming message
+     */
+    private void unReleaseProcessOrder(ErpOrderBuilder builder) throws DatasweepException, MESException {
+
+        String orderNumber = builder.getOrderNumber();
+
+        processOrder = ORDER_SERVICE.loadOrder(orderNumber);
+
+        ProcessOrderItem poi = (ProcessOrderItem) processOrder.getProcessOrderItems().get(0);
+
+        ORDER_SERVICE.applyOrderStatusTransitionExc(ProcessOrderItemFSMConstants.FSM_TRANS_UNDORELEASE, poi, false);
+        poi.getParent().Save(PCContext.getCurrentServerTime(), "EIG: Undo Release PO: " + poi.getOrderName(),
+                PCContext.getDefaultAccessPrivilege());
+
+
+        LOGGER.info("Undo Release Order: " + orderNumber);
+    }
+
+    /**
+     * UnExplode Process Order
+     *
+     * @param processorder
+     * @param messageData  : data of incoming message
+     */
+    private void unExplodeProcessOrder(ErpOrderBuilder builder) throws DatasweepException, MESException {
+
+        String orderNumber = builder.getOrderNumber();
+        // found on 02/06/2020
+        // ORDER_SERVICE.
+        //
+        ProcessOrder processOrder = PCContext.getFunctions().getProcessOrderByName(orderNumber);
+        processOrder = ORDER_SERVICE.loadOrder(orderNumber);
+
+        ProcessOrderItem poi = (ProcessOrderItem) processOrder.getProcessOrderItems().get(0);
+        // processOrder.refresh();
+
+        LOGGER.info("UnExplode order " + poi.getOrderName());
+
+        ORDER_EXPLOSION_SERVICE.undoExplosion(poi);
+    }
+
+    public void createProcessOrder(ErpOrderBuilder builder) throws DatasweepException, MESException {
+        String orderNumber = builder.getOrderNumber();
+        Part product = builder.getPart();
+
+        ProcessOrder processOrder = PCContext.getFunctions().getProcessOrderByName(orderNumber);
+
+        // create ProcessOrderItem if not already created
+        if (processOrder == null) { // create
+            LOGGER.info("Creating Order " + orderNumber + " in PharmaSuite");
+            processOrder = PCContext.getFunctions().createProcessOrder(orderNumber);
+        }
+        if (processOrder.getProcessOrderItem(orderNumber) == null) {
+            ProcessOrderItem poi = processOrder.createProcessOrderItem(orderNumber, product.getPartNumber(),
+                    product.getPartRevision(), builder.getQuantity());
+
+            setUdasOnObject(poi, builder.getUdaMap()); // set UDAs of ProcessOrderItem
+            processOrder.Save(null, null, PCContext.getDefaultAccessPrivilege());
+
+            MasterRecipe recipe = builder.getRecipe();
+            if (recipe != null) { // explode if recipe is specified
+                ORDER_SERVICE.attachMasterRecipe(poi, builder.getRecipe());
+
+                String batchName = builder.getBatch();
+                // CRA:BATCH
+                // Batch batch = batchService.loadBatch(batchName);
+                Batch batch = BATCH_SERVICE.loadBatchByCompoundIdentifier(batchName, product.getPartNumber());
+                if (batch == null) { // create Produced Batch if it doesn't yet exist
+                    // TODO: No setea nada mas
+                    batch = BATCH_SERVICE.createBatch(new BatchBuilder(product).batchName(batchName));
+                }
+
+                MESNamedUDAProcessOrderItem.setBatch(poi, batch);
+                processOrder.Save(null, null, PCContext.getDefaultAccessPrivilege());
+
+                LOGGER.info("Exploding order " + orderNumber);
+                ORDER_EXPLOSION_SERVICE.executeExplosion(poi);
+
+                // Check Materials
+                checkComponentsForProcessOrderItem(poi, builder.getComponents());
+                
+                // Create batch allocations
+                createAllocatedBatchesForProcessOrderItem(poi, builder.getComponents());
+
+                // Release the order
+                LOGGER.info("Releasing order " + orderNumber);
+                ORDER_SERVICE.applyOrderStatusTransitionExc(ProcessOrderItemFSMConstants.FSM_TRANS_RELEASE, poi, false);
+            }
+        }
+    }
+
+    @Override
+    @Transactional
+    public void createERPSublot(String batchName, String sublot, String quantity, UnitOfMeasure uom,
+            Location storageLocation, Part material) throws DatasweepException, MESException {
+
+        // CRA:BATCH
+        // Batch batch = batchSrv.loadBatch(batchName);
+        Batch batch = BATCH_SERVICE.loadBatchByCompoundIdentifier(batchName, material.getPartNumber());
+
+        if (batch != null) {
+            TransactionHistoryContext thCtx = new TransactionHistoryContext();
+            thCtx.setRemark(TRANS_HIST_COMMENT);
+
+            MeasuredValue quantityMV = MeasuredValueUtilities.createMV(new BigDecimal(quantity), uom);
+
+            @SuppressWarnings("unused")
+            Sublot newSublot = SUBLOT_SERVICE.createSublot(batch, sublot, quantityMV, storageLocation, thCtx);
+        } else {
+            String errMsg = String.format("Batch '%s' / Material '%s' hasn't been found!", batchName, material);
+            LOGGER.error(errMsg);
+            throw new MESException(errMsg);
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void createERPSublots(List<ErpSublotWrapper> sublots) throws DatasweepException, MESException {
+        // CRA:BATCH
+        // Batch batch = batchSrv.loadBatch(batchName);
+
+        if (sublots == null || sublots.isEmpty()) {
+            String errMsg = "Sublots list is empty! Unable to create any sublot.";
+            LOGGER.error(errMsg);
+            throw new MESException(errMsg);
+        } else {
+
+            LOGGER.info("Sublots creation begins!");
+
+            int counter = 1;
+            for (ErpSublotWrapper wrapper : sublots) {
+                Batch batch = BATCH_SERVICE.loadBatchByCompoundIdentifier(wrapper.getBatchName(), wrapper.getMaterial().getPartNumber());
+
+                LOGGER.info(String.format("Sublots creation: processing %d/%d for Batch '%s' / Material '%s'", counter++, sublots.size(),
+                        wrapper.getBatchName(), wrapper.getMaterial()));
+
+                if (batch != null) {
+                    TransactionHistoryContext thCtx = new TransactionHistoryContext();
+                    thCtx.setRemark(TRANS_HIST_COMMENT);
+
+                    MeasuredValue quantityMV = MeasuredValueUtilities.createMV(new BigDecimal(wrapper.getQuantity()), wrapper.getUom());
+
+                    Sublot sublot = SUBLOT_SERVICE.loadSublot(batch.getName(), wrapper.getSublot());
+                    if (sublot != null) {
+                        SUBLOT_SERVICE.changeSublotQuantity(sublot, quantityMV, thCtx);
+                        LOGGER.info(String.format("UPDATE Qty on Sublot: %s", sublot));
+                    } else {
+                        Sublot newSublot = SUBLOT_SERVICE.createSublot(batch, wrapper.getSublot(), quantityMV, wrapper.getStorageLocation(), thCtx);
+                        LOGGER.info(String.format("CREATE Sublot: %s", newSublot));
+                    }
+
+                } else {
+                    String errMsg = String.format("Batch '%s' / Material '%s' hasn't been found!", wrapper.getBatchName(), wrapper.getMaterial());
+                    LOGGER.error(errMsg);
+                    throw new MESException(errMsg);
+                }
+            }
+
+            LOGGER.info("Sublots creation ends!");
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void createERPEquipment(String name, String description, String status) throws DatasweepException, MESException {
+        IMESS88Equipment equipment = S88_EQUIPMENT_SERVICE.loadEquipmentByIdentifier(name);
+
+        if (equipment != null) {
+            LOGGER.info(String.format("UPDATE Equipment: %s", equipment));
+        } else {
+            equipment = S88_EQUIPMENT_SERVICE.createEquipment(name);
+            LOGGER.info(String.format("CREATE Equipment: %s", name));
+        }
+        equipment.setDescription(description);
+        equipment.setInventoryNumber(name);
+    }
+
+    @Override
+    @Transactional
+    public void createERPEquipments(List<ErpEquipmentWrapper> equipments) throws DatasweepException, MESException {
+
+        if (equipments == null || equipments.isEmpty()) {
+            String errMsg = "Equipments list is empty! Unable to create any equipment.";
+            LOGGER.error(errMsg);
+            throw new MESException(errMsg);
+        } else {
+
+            LOGGER.info("Equipments creation begins!");
+            IMESS88EquipmentClass equipmentClass = S88_EQUIPMENT_SERVICE.loadEquipmentClassByIdentifier(DEFAULT_EQUIPMENT_CLASS);
+            IMESS88StatusGraphAssignment equipmentStatusGraphAssignament = equipmentClass.getStatusGraphAssignment(EQUIPMENT_GRAPH_IDENTIFIER);
+            IMESS88StatusGraph equipmentStatusGraph =
+                    (equipmentStatusGraphAssignament != null) ? equipmentStatusGraphAssignament.getStatusGraph() : null;
+
+            int counter = 1;
+            for (ErpEquipmentWrapper wrapper : equipments) {
+
+                LOGGER.info(String.format("Equipments creation: processing %d/%d for Equipment '%s' / Description '%s' / Status '%s'", counter++,
+                        equipments.size(), wrapper.getName(), wrapper.getDescription(), wrapper.getStatus()));
+
+                String statusIdentifier = statusStringIdentifier(wrapper.getStatus());
+
+                IMESS88Equipment equipment = S88_EQUIPMENT_SERVICE.loadEquipmentByIdentifier(wrapper.getName());
+
+                if (equipment != null) {
+                    LOGGER.info(String.format("UPDATE Equipment: %s", equipment));
+                } else {
+                    equipment = S88_EQUIPMENT_SERVICE.createEquipment(wrapper.getName());
+                    equipmentClass.addEquipment(equipment);
+                    equipment.addStatusGraph(equipmentStatusGraph, statusIdentifier);
+                    LOGGER.info(String.format("CREATE Equipment: %s (class: %s)", equipment, equipmentClass));
+                }
+                equipment.setShortDescription(wrapper.getDescription());
+                equipment.setDescription(wrapper.getDescription());
+                equipment.setInventoryNumber(wrapper.getName());
+
+                // Save changes
+                equipment.Save(null, null, PCContext.getDefaultAccessPrivilege());
+
+                // Fire status change
+                IMESS88StatusGraphAssignment currentGraphAvailability = equipment.getStatusGraphAssignment(EQUIPMENT_GRAPH_IDENTIFIER);
+                if (currentGraphAvailability != null) {
+                    String currentStatus = currentGraphAvailability.getCurrentState().getIdentifier();
+                    String triggerName = (EQUIPMENT_GRAPH_AVAILABLE_IDENTIFIER.equals(statusIdentifier)) ? EQUIPMENT_TRIGGER_TO_BE_AVAILABLE
+                            : EQUIPMENT_TRIGGER_TO_BE_UNAVAILABLE;
+                    IS88StatusGraphFireTriggerResult result;
+                    if (!statusIdentifier.equals(currentStatus))
+                    {
+                        result = S88_EQUIPMENT_EXECUTION_SERVICE.fireGraphTrigger(equipment, EQUIPMENT_GRAPH_IDENTIFIER, triggerName, null);
+                        if (result.wasTransitionExecuted())
+                            LOGGER.info(String.format("Changed Equipment: %s Status [from: %s, to: %s]", wrapper.getName(), currentStatus,
+                                    statusIdentifier));
+                        else {
+                            String errMsg = String.format("Trigger '%s' for Equipment '%s' fails!. Error: %s", triggerName, wrapper.getName(),
+                                    result.getLocalizedErrorMessageWithContext());
+                            LOGGER.error(errMsg);
+                            throw new MESException(errMsg);
+                        }
+                    }
+                } else {
+                    String errMsg = String.format("Graph '%s' for Equipment '%s' hasn't been found!", EQUIPMENT_GRAPH_IDENTIFIER, wrapper.getName());
+                    LOGGER.error(errMsg);
+                    throw new MESException(errMsg);
+                }
+            }
+
+            LOGGER.info("Equipments creation ends!");
+        }
+
+    }
+
+    String statusStringIdentifier(String s) {
+        String statusString = "";
+
+        switch (s) {
+        case "0":
+            statusString = EQUIPMENT_GRAPH_NOT_AVAILABLE_IDENTIFIER;
+            break;
+        case "1":
+            statusString = EQUIPMENT_GRAPH_AVAILABLE_IDENTIFIER;
+            break;
+        }
+
+        return statusString;
+    }
+
+    /**
+     * Set the UDA values of the Map to a named UDA Object.
+     *
+     * @param object  the object to be changed
+     * @param theUdas Map of values for UDAs Key is name of UDA
+     * @throws DatasweepException thrown when an error occurs
+     */
+    public static void setUdasOnObject(INamedUDA object, Map<String, Object> theUdas) throws DatasweepException {
+
+        for (Map.Entry<String, Object> entry : theUdas.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ((key.startsWith(DEFAULT_AT_COLUMN_PREFIX) || key.startsWith(getCustomUdaPrefix()))
+                    && !ObjectUtils.equals(object.getUDA(key), value)) {
+                object.setUDA(value, key);
+            }
+        }
+    }
+
+    /**
+     * Gets the custom UDA prefix defined in the application configuration
+     *
+     * @return The custom UDA prefix
+     */
+    private static String getCustomUdaPrefix() {
+        return MESConfiguration.getMESConfiguration().getString("eig_CustomATDefinitionPrefix", "ct_",
+                "Prefix used for custom (i.e. customer specific) AT columns");
+    }
+
+    /**
+     * Get the ERP Bom Item of Bom header for the position number
+     *
+     * @param erpBomHeader The Bom Header
+     * @param posNr        The position number
+     * @return List<IMESERPBomItem> Bom items for position
+     * @throws DatasweepException Thrown when error occcurs
+     */
+    private List<IMESERPBomItem> getErpBomItems(IMESERPBomHeader erpBomHeader, String posNr) throws DatasweepException {
+
+        MESERPBomItemFilter filter = new MESERPBomItemFilter();
+
+        filter.forErpBomHeaderEqualTo(erpBomHeader);
+        if (!StringUtils.isBlank(posNr)) {
+            filter.forPositionEqualTo(posNr);
+        }
+        filter.exec();
+
+        return filter.getFilteredObjects();
+    }
+
+    /**
+     * Starts a messaging activity if necessary
+     */
+    private void startMessagingActivity() {
+        MessagingActivity ma;
+        try {
+            MessagingActivity.getInstance();
+            LOGGER.debug("Messaging activity already started");
+        } catch (JMSException e) {
+            LOGGER.debug("Starting messaging activity");
+            ma = new MessagingActivity();
+            ma.startup();
+        }
+    }
+
+    /**
+     * Check Materials
+     *
+     * @param poi The process order item object
+     * @param orderItems The order items from ERP
+     * @throws DatasweepException Thrown when error occurs
+     */
+    private void checkComponentsForProcessOrderItem(ProcessOrderItem poi, List<ErpOrderItemBuilder> orderItems) throws DatasweepException {
+        ControlRecipe controlRecipe = OrderUtils.getControlRecipe(poi);
+        List<OrderStep> orderSteps = controlRecipe.getOrderSteps();
+        for (OrderStep os : orderSteps) {
+            List<OrderStepInput> orderStepInputs = os.getOrderStepInputItems();
+            for (OrderStepInput osi : orderStepInputs) {
+                for (ErpOrderItemBuilder item : orderItems) {
+                    if (item.getPart() != null && item.getPart().getPartNumber() != null
+                            && item.getPart().getPartNumber().equals(osi.getPart().getPartNumber())) {
+                        LOGGER.info(String.format("Allocating '%s' on material '%s' position '%s' for order '%s'", item.getUdaMap(), item.getPart(),
+                                MESNamedUDAOrderStepInput.getPosition(osi), 
+                                poi.getOrderName()));
+                        // MESNamedUDAOrderStepInput.setPosition(osi, item.getPosition());
+                        setUdasOnObject(osi, item.getUdaMap());
+                    }
+                }
+            }
+            os.Save(null, null, PCContext.getDefaultAccessPrivilege());
+        }
+    }
+
+    /**
+     * Generate batch allocations based on download information
+     *
+     * @param poi        The process order item object
+     * @param orderItems The order items from ERP
+     * @throws DatasweepException Thrown when error occurs
+     */
+    private void createAllocatedBatchesForProcessOrderItem(ProcessOrderItem poi, List<ErpOrderItemBuilder> orderItems)
+            throws DatasweepException {
+        ControlRecipe controlRecipe = OrderUtils.getControlRecipe(poi);
+        List<OrderStep> orderSteps = controlRecipe.getOrderSteps();
+        for (OrderStep os : orderSteps) {
+            List<OrderStepInput> orderStepInputs = os.getOrderStepInputItems();
+            for (OrderStepInput osi : orderStepInputs) {
+                for (ErpOrderItemBuilder item : orderItems) {
+                    if (StringUtils.isNotBlank(item.getPosition())
+                            && item.getPosition().equals(MESNamedUDAOrderStepInput.getPosition(osi))
+                            && (item.getBatch() != null)) {
+                        LOGGER.info("Allocating batch " + item.getBatch().getName() + " on "
+                                + MESNamedUDAOrderStepInput.getNumber(osi) + " for order " + poi.getOrderName());
+                        MESBatchAllocation batchAllocation = new MESBatchAllocation();
+                        batchAllocation.setBatchKey(Long.valueOf(item.getBatch().getKey()));
+                        batchAllocation.setOrderStepInputKey(Long.valueOf(osi.getKey()));
+                        batchAllocation.setOrderStep(os);
+                        batchAllocation.Save(null, null, PCContext.getDefaultAccessPrivilege());
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Remove the unreleased process order
+     *
+     * @param poi The ProcessOrderItem
+     * @throws DatasweepException Thrown when error occurs
+     * @throws MESException       Thrown when error occurs
+     */
+    private void removeUnreleasedOrder(ErpOrderBuilder builder) throws DatasweepException, MESException {
+        String orderNumber = builder.getOrderNumber();
+
+        processOrder = PCContext.getFunctions().getProcessOrderByName(orderNumber);
+
+        if (processOrder == null) {
+            processOrder = PCContext.getFunctions().getProcessOrderByName(orderNumber);
+        }
+        ProcessOrderItem poi = (ProcessOrderItem) processOrder.getProcessOrderItems().get(0);
+
+        String poiStatus = poi.getCurrentState("orderStatus").getState().getName();
+        if ("Defined".equals(poiStatus)) {
+
+            removeAllocatedBatchesForProcessOrderItem(poi);
+            // Reset the process order.
+            ORDER_SERVICE.detachMasterRecipe(poi);
+
+            LOGGER.info("Removing order " + poi.getOrderName());
+            processOrder.removeProcessOrderItem(poi, PCContext.getDefaultAccessPrivilege());
+            processOrder.remove(null, null, PCContext.getDefaultAccessPrivilege());
+        }
+    }
+
+    /**
+     * Remove batch allocations for a given ProcessOrderItem
+     *
+     * @param poi The process order item object
+     */
+    private void removeAllocatedBatchesForProcessOrderItem(ProcessOrderItem poi) {
+        LOGGER.info("Removing batch allocations for order " + poi.getOrderName());
+        ControlRecipe controlRecipe = OrderUtils.getControlRecipe(poi);
+        IMatMgmtSupportService imatService = ServiceFactory.getService(IMatMgmtSupportService.class);
+        List<OrderStep> orderSteps = controlRecipe.getOrderSteps();
+        for (OrderStep os : orderSteps) {
+            List<OrderStepInput> orderStepInputs = os.getOrderStepInputItems();
+            for (OrderStepInput osi : orderStepInputs) {
+                imatService.deallocateAllBatchesForOrderStepInput(osi);
+            }
+
+        }
+    }
+
+}

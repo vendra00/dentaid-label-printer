@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATRow at-definition-key="ATDefinition-X_BuildingBlock2DynParCls" object-source="1" parent-key="0" purge-status="false" type="3">
+  <data-cells data-type="4" referenced-type="0">
+    <name>X_buildingBlockType</name>
+    <value>MESPhaseLib</value>
+  </data-cells>
+  <data-cells data-type="4" referenced-type="0">
+    <name>X_identifier</name>
+    <value>Long</value>
+  </data-cells>
+  <data-cells data-type="2" referenced-type="0">
+    <name>X_maximumNumber</name>
+    <value>-1</value>
+  </data-cells>
+  <data-cells data-type="8" referenced-type="64">
+    <name>X_parameterClass</name>
+    <value>ATRow-X_ParameterClass__EBABE7CD-E0DA-06FA-D8C5-2F937CE5B847_</value>
+  </data-cells>
+  <data-cells data-type="8" referenced-type="64">
+    <name>X_phaseLib</name>
+    <value>ATRow-X_PhaseLib__269791D5-0D28-EF04-8F2D-A31AE4AAD81D_</value>
+  </data-cells>
+  <name>{02304701-E9F0-CBE6-2F4B-8017C225D1D0}</name>
+</DATRow>
+

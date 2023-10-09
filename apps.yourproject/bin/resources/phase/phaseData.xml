@@ -1,0 +1,37 @@
+<RtPhaseDataAttributes>
+    <RtPhaseDataAttribute>
+        <Name>response</Name>
+        <Description>Response text</Description>
+        <DataType>
+            <Binary/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>responseRaw</Name>
+        <Description>Raw response text as it arrives from the WS</Description>
+        <DataType>
+            <Binary/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>sent</Name>
+        <Description>Sent successful</Description>
+        <DataType>
+            <Bool/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>sentAttempted</Name>
+        <Description>Sent attempted</Description>
+        <DataType>
+            <Bool/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>image</Name>
+        <Description>The response text as an image</Description>
+        <DataType>
+            <Binary/>
+        </DataType>
+    </RtPhaseDataAttribute>
+</RtPhaseDataAttributes>

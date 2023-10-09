@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DReportDesignWrapper>
+  <report-design locale-key="0" log-export="false" log-preview="false" log-printout="false" mark-as-reprint="false" object-source="1" page-height="0" page-width="0" report-data-def-key="ReportDataDefinition-PS-BatchReport-DoNoExportImportInProcessDesigner" reprint-possible="false" show-preview="false">
+    <access-control-info />
+    <name>PS-BatchReport-DenLP_0100.1</name>
+    <report-design-name>PS-BatchReport-DenLP_0100</report-design-name>
+    <report-design-revision>1</report-design-revision>
+    <user-defined-attributes>
+      <data-items list-support="false" object-type="0" type="4">
+        <name>X_subReportVariableName</name>
+        <value>SUBREPORT_DenLP_0100</value>
+      </data-items>
+    </user-defined-attributes>
+  </report-design>
+  <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PS-BatchReport-DenLP_0100.1" pageWidth="475" pageHeight="842" columnWidth="475" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+    <property name="ireport.scriptlethandling" value="0" />
+    <property name="ireport.encoding" value="UTF-8" />
+    <import value="net.sf.jasperreports.engine.*" />
+    <import value="java.util.*" />
+    <import value="net.sf.jasperreports.engine.data.*" />
+    <template>PS-BatchReport-JasperStylesTemplate.jrtx</template>
+    <parameter name="CURRENT_PHASE" class="java.lang.Object" />
+    <parameter name="BATCH_RECORD_WRAPPER" class="com.rockwell.mes.services.batchreport.ifc.IBatchProductionRecordDocumentWrapper" />
+    <queryString language="xPath" />
+    <detail>
+      <band height="46" />
+    </detail>
+  </jasperReport>
+</DReportDesignWrapper>
+

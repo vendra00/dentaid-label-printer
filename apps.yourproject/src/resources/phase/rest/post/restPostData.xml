@@ -1,0 +1,16 @@
+<RtPhaseDataAttributes>
+	<RtPhaseDataAttribute>
+		<Name>url</Name>
+		<Description>url for the endpoint</Description>
+		<DataType>
+			<String length="200" />
+		</DataType>
+	</RtPhaseDataAttribute>
+	<RtPhaseDataAttribute>
+		<Name>requestType</Name>
+		<Description>the request type for the call</Description>
+		<DataType>
+			<String length="200" />
+		</DataType>
+	</RtPhaseDataAttribute>
+</RtPhaseDataAttributes>

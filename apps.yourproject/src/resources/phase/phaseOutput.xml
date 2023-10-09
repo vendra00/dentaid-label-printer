@@ -1,0 +1,18 @@
+<PhaseOutputDescription>
+    <PhaseOutput>
+        <Name>processing</Name>
+        <DisplayName>Processing Successful</DisplayName>
+        <Description>Phase successfully processed</Description>
+        <DataType>
+            <Bool/>
+        </DataType>
+    </PhaseOutput>
+    <PhaseOutput>
+        <Name>value</Name>
+        <DisplayName>Value</DisplayName>
+        <Description>Value resulting for the response transformation applying the “Output Template” as string of characters</Description>
+        <DataType>
+            <Binary/>
+        </DataType>
+    </PhaseOutput>
+</PhaseOutputDescription>

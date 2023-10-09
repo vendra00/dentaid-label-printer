@@ -1,0 +1,26 @@
+<PhaseOutputDescription>
+	<PhaseOutput>
+		<Name>Name</Name>
+		<DisplayName>Label Name</DisplayName>
+		<Description>The label output name</Description>
+		<DataType>
+			<String/>
+		</DataType>
+	</PhaseOutput>
+	<PhaseOutput>
+		<Name>Description</Name>
+		<DisplayName>Label Description</DisplayName>
+		<Description>The label output description</Description>
+		<DataType>
+			<String/>
+		</DataType>
+	</PhaseOutput>
+	<PhaseOutput>
+		<Name>Value</Name>
+		<DisplayName>Label Value</DisplayName>
+		<Description>The label output value</Description>
+		<DataType>
+			<String/>
+		</DataType>
+	</PhaseOutput>
+</PhaseOutputDescription>

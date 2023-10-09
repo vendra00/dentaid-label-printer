@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="1" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="true" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Historian provider</description>
+    <name>X_HistorianProvider</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Identifier of the live data template to use for this equipment.</description>
+    <name>X_LDTemplateName</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>The channel where the ActiveMQ broker of the Automation Integration Server (LiveDataServer) can be connected</description>
+    <name>X_OverrideAIServerName</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>The channel where the ActiveMQ broker of the Automation Integration Server (LiveDataServer) in its Histioran access role can be connected</description>
+    <name>X_OverrideHistorianAISrv</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Historian access server name</description>
+    <name>X_OverrideHistorianASrv</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Historian server name</description>
+    <name>X_OverrideHistorianSrv</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>LiveData area path, e.g. RNA://$Global/Rockwell/Site_1</description>
+    <name>X_OverrideLDAreaPath</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Barcode (conventional or 2D)</description>
+    <name>X_barcode</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>&lt;protected&gt;Barcode prefix for entities which are generated from a template entity</description>
+    <name>X_barcodePrefix</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;CL: EqmTemplateEntityBarcodePrefixPolicy</description>
+    <name>X_barcodePrefixPolicy</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Description of the equipment</description>
+    <name>X_description</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Is this entity disposable?</description>
+    <name>X_disposable</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>CL: EquipmentHierarchy</description>
+    <name>X_equipmentLevel</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>CL: EqmExpiryChangeErrorBehavior</description>
+    <name>X_expiryChgErrBehavior</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>&lt;protected&gt;Overall length of automatically generated identifier for entities which are generated from a template entity</description>
+    <name>X_genIdentifierLength</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="false" referenced-key="0" referenced-type="0" text-length="80">
+    <description>A unique identifier for an equipment instance.</description>
+    <name>X_identifier</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>&lt;protected&gt;Identifier prefix for entities which are generated from a template entity</description>
+    <name>X_identifierPrefix</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Inventory number</description>
+    <name>X_inventoryNumber</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>True if the equipment was migrated from a non S88 equipment</description>
+    <name>X_isMigrated</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Is this a template entity?</description>
+    <name>X_isTemplate</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="117" text-length="0">
+    <description>Contains the report design that shall be used to generate equipment labels</description>
+    <name>X_labelReportDesign</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Enables logbook writing for this equipment</description>
+    <name>X_logbookEnabled</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Manufacturer</description>
+    <name>X_manufacturer</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Manufacturing date</description>
+    <name>X_manufacturingDate</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>CL: EquipmentMode</description>
+    <name>X_mode</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Model</description>
+    <name>X_model</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_S88Equipment" referenced-type="64" text-length="0">
+    <description>Reference to parent entity</description>
+    <name>X_parentEntity</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="2000">
+    <description>Serial number</description>
+    <name>X_serialNumber</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Short functional description of the equipment</description>
+    <name>X_shortDescription</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="231" text-length="0">
+    <description>Required to add FSMs to S88 equipment entity (binding, status control)</description>
+    <name>X_stateProxy</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_S88Equipment" referenced-type="64" text-length="0">
+    <description>The template entity from which this entity was generated</description>
+    <name>X_templateEntity</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+        <description>Is this a template entity?</description>
+        <name>X_isTemplate</name>
+      </column>
+    </column-info>
+    <description>Faster Access to templates</description>
+    <name>IsTemplate</name>
+  </at-index-definitions>
+  <at-index-definitions constraint-type="1">
+    <column-info sort-direction="0">
+      <column data-type="4" nullable="false" referenced-key="0" referenced-type="0" text-length="80">
+        <description>A unique identifier for an equipment instance.</description>
+        <name>X_identifier</name>
+      </column>
+    </column-info>
+    <description>Unique identifier</description>
+    <name>S88EquIdent</name>
+  </at-index-definitions>
+  <at-index-definitions constraint-type="1">
+    <column-info sort-direction="0">
+      <column data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+        <description>Barcode (conventional or 2D)</description>
+        <name>X_barcode</name>
+      </column>
+    </column-info>
+    <description>Unique barcode</description>
+    <name>UQ_Barcode</name>
+  </at-index-definitions>
+  <category>S88_eqm</category>
+  <description>S88 equipment entity</description>
+  <name>X_S88Equipment</name>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>baseClass</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88equipment.ifc.AbstractStatusControlledS88EquipmentWithPropertiesAndChangeHistory</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>identifierColumnName</name>
+    <user-defined-attributes />
+    <value>X_identifier</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>packagePrefix</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88equipment</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>publishedAPI</name>
+    <user-defined-attributes />
+    <value>true</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>useCache</name>
+    <user-defined-attributes />
+    <value>true</value>
+  </parameters>
+</DATDefinition>
+

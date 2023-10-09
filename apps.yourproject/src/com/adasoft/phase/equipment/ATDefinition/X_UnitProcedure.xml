@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATDefinition at-version="1" auto-name-creation="false" data-management-type="1" details-page-size="0" growth-type="0" lazy-fetch-details="true" logging-level="0" object-source="1" static-data="true" support-state-proxy="false" type="3">
+  <access-control-info />
+  <at-column-definitions data-type="8" nullable="true" referenced-key="0" referenced-type="123" text-length="0">
+    <description>Activity set with the associated SFC</description>
+    <name>X_activitySet</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Snapshot of the status of the custom building block where the recipe entity was derived from</description>
+    <name>X_bbStatusOfCustomBB</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Soft reference to system building block where this recipe entity was derived from</description>
+    <name>X_derivedFrom</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Name of custom building block where this recipe entity was derived from</description>
+    <name>X_derivedFromCustom</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="6" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Timestamp when the recipe entity derived from was assigned</description>
+    <name>X_derivedFromTimestamp</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="255">
+    <description>Description of this recipe entity</description>
+    <name>X_description</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Reference (Key) to the master recipe entity (X_UnitProcedure)this control recipe entity was copied from.</description>
+    <name>X_fkSourceEntity</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>false</default-value>
+    <description>Flag indicating if the building block (here: Open (white-box) BB) belongs to a Building Block Template that can be inserted via Universe + Setlist and not to a Recipe.</description>
+    <name>X_isCustomBB</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="false" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>1</default-value>
+    <description>Flag indicating if the Recipe entity belongs to a Master Recipe or a Control Recipe.</description>
+    <name>X_isMasterRecipe</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>Flag indicating if the unit procedure can be executed on multiple stations in parallel (e.g. for Dispense unit procedures this flag will be "true"). In principle this flag is independent from the corresponding flag on Operation level.</description>
+    <name>X_isMultipleExecAllowed</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="9" nullable="false" referenced-key="0" referenced-type="0" text-length="0">
+    <default-value>false</default-value>
+    <description>Flag indicating if this unit procedure is a weigh and dispense unit procedure</description>
+    <name>X_isWeighAndDispense</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="17" text-length="0">
+    <description>List of texts that can be selected when creating an exception or exception comment at execution</description>
+    <name>X_operatorExceptionTxts</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="ATDefinition-X_Procedure" referenced-type="64" text-length="0">
+    <description>Reference to the parent recipe entity</description>
+    <name>X_parent</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="8" nullable="true" referenced-key="-1" referenced-type="17" text-length="0">
+    <description>List of texts that can be selected when creating an exception or exception comment at review</description>
+    <name>X_reviewerExceptionTxts</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="40">
+    <description>Revision of custom building block where this recipe entity was derived from</description>
+    <name>X_revisionOfCustomBB</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="2" nullable="true" referenced-key="0" referenced-type="0" text-length="0">
+    <description>The key of the route step associated with this unit procedure</description>
+    <name>X_routeStepKey</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="true" referenced-key="0" referenced-type="0" text-length="80">
+    <description>Short description of custom building block where this recipe entity was derived from</description>
+    <name>X_shortDescrOfCustomBB</name>
+  </at-column-definitions>
+  <at-column-definitions data-type="4" nullable="false" referenced-key="0" referenced-type="0" text-length="64">
+    <description>Name of this recipe entity</description>
+    <name>X_unitProcedureName</name>
+  </at-column-definitions>
+  <at-index-definitions constraint-type="0">
+    <column-info sort-direction="0">
+      <column data-type="8" nullable="true" referenced-key="ATDefinition-X_Procedure" referenced-type="64" text-length="0">
+        <description>Reference to the parent recipe entity</description>
+        <name>X_parent</name>
+      </column>
+    </column-info>
+    <description>Fasten top down query</description>
+    <name>X_parentProcedure</name>
+  </at-index-definitions>
+  <category>S88_recipe</category>
+  <description>Unit procedure (With parent: master recipe representation otherwise whitebox building block)</description>
+  <name>X_UnitProcedure</name>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>baseClass</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88.impl.recipe.AbstractUnitProcedureOperation</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>identifierColumnName</name>
+    <user-defined-attributes />
+    <value>X_unitProcedureName</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>libName</name>
+    <user-defined-attributes />
+    <value>recipe</value>
+  </parameters>
+  <parameters data-type="4" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>packagePrefix</name>
+    <user-defined-attributes />
+    <value>com.rockwell.mes.services.s88</value>
+  </parameters>
+  <parameters data-type="9" decimal-scale="9" definition-key="0" object-source="1" object-type="-1" owner-type="60">
+    <name>publishedAPI</name>
+    <user-defined-attributes />
+    <value>true</value>
+  </parameters>
+</DATDefinition>
+

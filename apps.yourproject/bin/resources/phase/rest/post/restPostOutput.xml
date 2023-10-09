@@ -1,0 +1,10 @@
+<PhaseOutputDescription>
+    <PhaseOutput>
+        <Name>request</Name>
+        <DisplayName>Request</DisplayName>
+        <Description>Request call </Description>
+        <DataType>
+            <String length="4000" />
+        </DataType>
+    </PhaseOutput>
+</PhaseOutputDescription>

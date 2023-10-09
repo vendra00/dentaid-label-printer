@@ -1,0 +1,79 @@
+<RtPhaseDataAttributes>
+    <RtPhaseDataAttribute>
+        <Name>EquipEntityId</Name>
+        <Description>The equipment entity identifier</Description>
+        <DataType>
+            <String/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>BundleId</Name>
+        <Description>The user bundle identifier</Description>
+        <DataType>
+            <String/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>Property</Name>
+        <Description>The configured property</Description>
+        <DataType>
+            <String/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>DecimalValue</Name>
+        <Description>The decimal property value</Description>
+        <DataType>
+            <BigDecimal/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>LongValue</Name>
+        <Description>The long property value</Description>
+        <DataType>
+            <Long/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>MeasuredValueValue</Name>
+        <Description>The measured value property value</Description>
+        <DataType>
+            <MeasuredValue/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>BooleanValue</Name>
+        <Description>The boolean property value</Description>
+        <DataType>
+            <Bool/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>StringValue</Name>
+        <Description>The string property value</Description>
+        <DataType>
+            <String length="2000"/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>DurationValue</Name>
+        <Description>The duration property value</Description>
+        <DataType>
+            <Duration/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>DateTimeValue</Name>
+        <Description>The date time property value</Description>
+        <DataType>
+            <DateTime/>
+        </DataType>
+    </RtPhaseDataAttribute>
+    <RtPhaseDataAttribute>
+        <Name>DateTimeFormat</Name>
+        <Description>String value of date time format</Description>
+        <DataType>
+            <String/>
+        </DataType>
+    </RtPhaseDataAttribute>
+</RtPhaseDataAttributes>

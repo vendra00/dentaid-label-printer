@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!-- Common config.xml including all service definitions  -->
+<configuration>
+<hierarchicalXml fileName="custService-wdOrder.xml" />
+  
+</configuration>

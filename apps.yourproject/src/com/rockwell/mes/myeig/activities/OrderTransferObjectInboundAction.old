@@ -1,0 +1,302 @@
+package com.rockwell.mes.myeig.activities;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.datasweep.compatibility.client.Batch;
+import com.datasweep.compatibility.client.DatasweepException;
+import com.datasweep.compatibility.client.MasterRecipe;
+import com.datasweep.compatibility.client.MasterRecipeFilter;
+import com.datasweep.compatibility.client.MeasuredValue;
+import com.datasweep.compatibility.client.Part;
+import com.datasweep.compatibility.client.UnitOfMeasure;
+import com.datasweep.compatibility.ui.Time;
+import com.datasweep.plantops.common.constants.IObjectTypes;
+import com.rockwell.integration.messaging.MessageEnvelope;
+import com.rockwell.mes.commons.base.ifc.configuration.MESConfiguration;
+import com.rockwell.mes.commons.base.ifc.exceptions.MESException;
+import com.rockwell.mes.commons.base.ifc.i18n.I18nMessageUtility;
+import com.rockwell.mes.commons.base.ifc.services.PCContext;
+import com.rockwell.mes.commons.base.ifc.services.ServiceFactory;
+import com.rockwell.mes.myeig.data.OrderTransferObject;
+import com.rockwell.mes.myeig.data.OrderTransferObject.OrderProcess;
+import com.rockwell.mes.myeig.data.OrderTransferObject.OrderReservation;
+import com.rockwell.mes.myeig.data.OrderTransferObject.OrderSequence;
+import com.rockwell.mes.myeig.data.OrderTransferObject.OrderStatusTransition;
+import com.rockwell.mes.myeig.data.OrderTransferObject.OrderWarehouse;
+import com.rockwell.mes.myeig.service.ifc.ErpOrderBuilder;
+import com.rockwell.mes.myeig.service.ifc.ErpOrderBuilder.ErpOrderItemBuilder;
+import com.rockwell.mes.myeig.service.ifc.IInboundMessageService;
+import com.rockwell.mes.myeig.utility.IntegrationGatewayHelper;
+import com.rockwell.mes.services.inventory.ifc.AbstractBatchQualityTransitionEventListener;
+import com.rockwell.mes.services.inventory.ifc.BatchBuilder;
+import com.rockwell.mes.services.inventory.ifc.IBatchService;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESMasterRecipe;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESMaterialParameter;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESOperation;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESPhase;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESProcedure;
+import com.rockwell.mes.services.s88.ifc.recipe.IMESUnitProcedure;
+import com.rockwell.mes.services.s88.ifc.recipe.RecipeConfiguration;
+import com.rockwell.mes.services.s88.impl.recipe.MESMasterRecipe;
+
+/**
+ * This class implements functionality to process incoming order messages
+ * <p>
+ * 
+ * @author syim, (c) Copyright 2012 Rockwell Automation Technologies, Inc. All
+ *         Rights Reserved.
+ */
+public class OrderTransferObjectInboundAction extends AbstractInboundActivity {
+
+    /** logger */
+    private static final Log LOGGER = LogFactory.getLog(OrderTransferObjectInboundAction.class);
+
+    public enum ACTION {
+        CREATE, DELETE, NONE
+    }
+
+    @Override
+    public synchronized void processActivityData(final MessageEnvelope data) throws DatasweepException, MESException {
+        // public void processActivityData(final MessageEnvelope data) throws DatasweepException, MESException {
+
+        OrderTransferObject orderTransferObject = (OrderTransferObject) data.getPayload();
+        setDocNum(orderTransferObject.getIdoc()); // set the document no. for all logging
+        
+        // 1. order number
+        String orderNo = validate(true, orderTransferObject.getOrderNumber(), String.class, "Order Number");
+        setObjectsProcessed("Order Number: " + orderNo); // for inbound event log details
+
+        // 2. material number
+        Part material = validate(true, orderTransferObject.getPartNumber(), Part.class, "Material Number");
+
+        // 3. order quantity and UOM
+        String quantityVal = validate(true, orderTransferObject.getQuantity(), String.class, "Order Quantity");
+        UnitOfMeasure quantityUom = validate(true, orderTransferObject.getQuantityUom(), UnitOfMeasure.class, "Order Quantity UOM");
+        MeasuredValue quantity = IntegrationGatewayHelper.getMeasuredValue(quantityVal, quantityUom);
+
+        // 4. Start date
+        Time erpStartDate = IntegrationGatewayHelper.fromSapString(orderTransferObject.getErpStartDate());
+       /* Not needed for now 
+         if (erpStartDate == null) {
+            String message = "Start Date should not be null.";
+            logError(LOGGER, message);
+            addError(this.getClass().getName(), message + "\n");
+        }
+        */
+        // 5. End date
+        Time erpFinishDate = IntegrationGatewayHelper.fromSapString(orderTransferObject.getErpFinishDate());
+        /* Not needed for now 
+        if (erpFinishDate == null) {
+            String message = "End Date should not be null.";
+            logError(LOGGER, message);
+            addError(this.getClass().getName(), message + "\n");
+        }
+        */
+        
+        // 6. Components
+        List<ErpOrderItemBuilder> components = new ArrayList<ErpOrderItemBuilder>();
+        for (OrderSequence orderSequence : orderTransferObject.getOrderSequences()) {
+            for (OrderProcess orderProcess : orderSequence.getOrderProcesses()) {
+                for (OrderReservation orderReservation : orderProcess.getOrderReservations()) {
+
+                    // a. component position
+                    String componentPos = validate(true, orderReservation.getPosition(), String.class, "Component Position");
+
+                    // b. component material
+                    Part componentPart = validate(true, orderReservation.getPartNumber(), Part.class, "Component Material");
+
+                    // c. component quantity
+                    String componentQtyVal = validate(true, orderReservation.getPlannedQuantity(), String.class, "Component Quantity");
+                    UnitOfMeasure componentQtyUom =
+                            validate(true, orderReservation.getPlannedQuantityUom(), UnitOfMeasure.class, "Component Quantity Unit of Measure");
+                    MeasuredValue componentQty = IntegrationGatewayHelper.getMeasuredValue(componentQtyVal, componentQtyUom);
+
+                    // d. batch allocation
+                    final IBatchService batchSrv = ServiceFactory.getService(IBatchService.class);
+                    String componenBatchName = validate(false, orderReservation.getBatchName(), String.class, "Batch Name");
+                    Batch componentBatch = batchSrv.loadBatchByCompoundIdentifier(componenBatchName, componentPart.getPartNumber());
+
+                    // e. plant
+                    String componentPlant = validate(true, orderReservation.getPlant(), String.class, "Plant");
+
+                    // f. storage location
+                    String componentStorageLocation = validate(true, orderReservation.getStorageLocation(), String.class, "Storage Location");
+
+                    // Create UDAMap
+                    Map<String, Object> componentUdaMap = new HashMap<String, Object>();
+                    componentUdaMap.put("ct_plant", componentPlant);
+                    componentUdaMap.put("ct_storageLocation", componentStorageLocation);
+                    componentUdaMap.put("ct_externalPosition", componentPos);
+                    
+                    // Create and assign itemBuilder
+                    ErpOrderItemBuilder itemBuilder = new ErpOrderItemBuilder(componentPos, componentPart, componentQty);
+                    itemBuilder.batch(componentBatch);
+                    itemBuilder.udaMap(componentUdaMap);
+                    components.add(itemBuilder);
+                }
+            }
+        }
+
+        // 7. Master recipe lookup
+        // sgo 
+        //String routeMap = orderTransferObject.getRouteMap();
+        String routeMap = validate(true, orderTransferObject.getRouteMap(), String.class, "Route Map");
+        MasterRecipe recipe = getValidMasterRecipe(material, routeMap);
+        if (recipe == null) {
+            addError(this.getClass().getName(), "Master recipe could not be determined.\n");
+        }
+
+        // 8. Batch
+        String batchName = orderTransferObject.getBatch();
+        if (batchName == null) {
+            String message = "Batch should not be null.";
+            logError(LOGGER, message);
+            addError(this.getClass().getName(), message + "\n");
+        }
+
+        // 9. Get Stat
+        ACTION action = ACTION.NONE;
+        String transition = null;
+        for (OrderStatusTransition orderStatusTransition : orderTransferObject.getOrderStatusTransitions()) {
+            transition = orderStatusTransition.getTransition();
+            if (transition.equals("I0002")) {
+                action = ACTION.CREATE;
+                break;
+            } else if (transition.equals("I0045")) {
+                action = ACTION.DELETE;
+                break;
+            } else
+                action = ACTION.NONE;
+        }
+
+        // 10. Get warehouse (the last!)
+        String warehouse = null;
+        for (OrderWarehouse orderWarehouse : orderTransferObject.getWarehouses()) {
+            warehouse = orderWarehouse.getWarehouse();
+        }
+
+        // set UDAs for ProcessOrderItem
+        Map<String, Object> ordUdaMap = new HashMap<String, Object>();
+        ordUdaMap.put("X_erpStartDate", erpStartDate);
+        ordUdaMap.put("X_erpFinishDate", erpFinishDate);
+        ordUdaMap.put("X_processingType", 10); // 10 = batch
+        // 20200804 TODO: review UDAs names!!!
+        ordUdaMap.put("X_batch", batchName);
+        // ordUdaMap.put("X_status", transition);
+        // ordUdaMap.put("X_site", orderTransferObject.getSite());
+        // ordUdaMap.put("X_warehouse", warehouse);
+
+        if (getErrors() == null || getErrors().size() == 0) {
+
+            /*
+             * 20201102 - tmedina: 
+             * We are going to validate if batch exists, else we need to create it!
+             */
+            final IBatchService batchSrv = ServiceFactory.getService(IBatchService.class);
+            final IInboundMessageService ims = ServiceFactory.getService(IInboundMessageService.class);
+
+            String batchStatusValue = decodeStatus(orderTransferObject);
+
+            Batch batch = batchSrv.loadBatchByCompoundIdentifier(batchName, material.getPartNumber());
+            if (batch == null) {
+                BatchBuilder bb = new BatchBuilder(material).batchName(batchName);
+                batchSrv.createBatch(bb);
+                ims.createERPBatch(bb, batchStatusValue);
+            } else {
+                ims.updateERPBatchStatus(new BatchBuilder(material).batchName(batchName), batchStatusValue);
+            }
+            /*
+             * 20201102 - tmedina: END! 
+             */
+
+            ErpOrderBuilder builder = new ErpOrderBuilder(orderNo, material, quantity).recipe(recipe).udaMap(ordUdaMap)
+                    .components(components).batch(batchName);
+            // IInboundMessageService ims = ServiceFactory.getService(IInboundMessageService.class);
+
+            switch (action) {
+            case CREATE:
+                ims.createERPOrder(builder);
+                break;
+            case DELETE:
+                ims.deleteERPOrder(builder);
+                break;
+            case NONE:
+                logError(LOGGER, "The list of transitions received doesn't match with any transition expected.");
+                addError(this.getClass().getName(), "The list of transitions received doesn't match with any transition expected.\n");
+                break;
+            default:
+                break;
+            }
+        } else
+            logError(LOGGER,
+                    MessageFormat.format(resources.getString("ct_eihub_error.generic_error"), new Object[] { orderTransferObject.getIdoc() }));
+
+    }
+
+    /**
+     * This method translates the value of the INSMK field in a pharmasuite valid status.
+     * 
+     * INSMK = L --> Released (liberado)
+     * INSMK = X --> Quarantine (bloqueado)
+     * 
+     * @param orderTO 
+     * @return
+     */
+    private String decodeStatus(OrderTransferObject orderTO) {
+        String status = AbstractBatchQualityTransitionEventListener.FSM_TRANS_QUARANTINE;
+        final String RELEASED_VALUE = "L";
+        if (RELEASED_VALUE.equalsIgnoreCase(orderTO.getBatchStatusMarker())) {
+            status = AbstractBatchQualityTransitionEventListener.FSM_TRANS_RELEASE;
+        }
+        return status;
+    }
+
+    /**
+     * Retrieves the master recipe to be used for order explosion This lookup algorithm is likely to be different for
+     * projects. In our scenario, the lookup is based on the product and ERP production version information
+     * 
+     * @param product The product
+     * @param routeMap The Route Map
+     * @return MasterRecipe The recipe
+     * @throws DatasweepException thrown when error occurs
+     */
+    private MasterRecipe getValidMasterRecipe(final Part product, final String routeMap)
+            throws DatasweepException {
+        logInfo(LOGGER, "Determining master recipe");
+        MasterRecipe masterRecipe = null;
+        if (product == null) {
+            return masterRecipe;
+        }
+        String separator = MESConfiguration.getMESConfiguration().getString("eig_MasterRecipeDelimitString", "_",
+                "Master recipe delimiter");
+        String recipeName = product.getPartNumber() + separator + routeMap;
+        MasterRecipeFilter masterRecipeFilter = PCContext.getFunctions().createMasterRecipeFilter();
+        masterRecipeFilter.forNameEqualTo(recipeName);
+        masterRecipeFilter.forProducedPartEqualTo(product);
+        if (!RecipeConfiguration.allowNonValidMasterRecipeForOrder()) {
+            masterRecipeFilter.forCurrentStateEqualTo("Valid");
+        }
+        final List recipeList = masterRecipeFilter.exec();
+
+        if (recipeList.size() == 1) { // only return the master recipe if exactly 1 is found
+            masterRecipe = (MasterRecipe) recipeList.get(0);
+            logInfo(LOGGER, "Master recipe found: " + masterRecipe.getName());
+        }
+
+        return masterRecipe;
+    }
+
+    @Override
+    public Long getObjectType() {
+        return new Long(IObjectTypes.TYPE_PROCESSORDER);
+    }
+}

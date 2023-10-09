@@ -1,0 +1,43 @@
+<PhaseLibDescription>
+    <OutputDir>C:\Rockwell\10.02.00-PharmaSuite-FTPSACT-CD\FTPS_SDK\apps\yourproject\src\com\adasoft\gv\phase\webservice</OutputDir>
+    <Name>Send WebService Call</Name>
+    <Description>Allows an operator to execute a Web Service call</Description>
+    <PackageName>com.adasoft.gv.phase.webservice.webservicecall</PackageName>
+    <PhaseLibBaseName>SendWebSrvCall0200</PhaseLibBaseName>
+    <VisibleInNavigator value="true"/>
+    <InternalBuildingBlock value="false"/>
+    <SupportExceptions value="true"/>
+    <MaterialInputMin>0</MaterialInputMin>
+    <MaterialInputMax>0</MaterialInputMax>
+    <MaterialOutputMin>0</MaterialOutputMin>
+    <MaterialOutputMax>0</MaterialOutputMax>
+    <ATDefinitionPrefix>L_</ATDefinitionPrefix>
+    <UsageContext>All</UsageContext>
+    <ParameterClasses>
+        <ParameterClass>
+            <Name>Instruction (RS) [2.0]</Name>
+            <UsageIdentifier>Instruction</UsageIdentifier>
+            <SortIndex>1</SortIndex>
+        </ParameterClass>          
+        <ParameterClass>
+            <Name>Phase Completion Mode (RS) [1.0]</Name>
+            <UsageIdentifier>Mode</UsageIdentifier>            
+            <SortIndex>2</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>D Boolean Flag (RS) [1.0]</Name>
+            <UsageIdentifier>Multiple send</UsageIdentifier>           
+            <SortIndex>3</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>Exception Enable Definition (RS) [2.0]</Name>
+            <UsageIdentifier>Change field value exception configuration</UsageIdentifier>            
+            <SortIndex>4</SortIndex>
+        </ParameterClass>
+        <ParameterClass>
+            <Name>Exception Definition (RS) [3.0]</Name>
+            <UsageIdentifier>Abort exception</UsageIdentifier>           
+            <SortIndex>5</SortIndex>
+        </ParameterClass>
+    </ParameterClasses>
+</PhaseLibDescription>

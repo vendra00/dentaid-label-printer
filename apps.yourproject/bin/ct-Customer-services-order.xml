@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<configuration>
+	<MESOrderService>
+		<implementationClass>
+		    com.rockwell.mes.services.order.impl.MESOrderService
+		</implementationClass>
+	</MESOrderService>
+	<!-- Custom order explosion service -->
+	<OrderExplosionService>
+		<implementationClass>
+		    com.rockwell.custmes.services.order.impl.EnhancedOrderExplosionService
+		</implementationClass>
+	</OrderExplosionService>
+	<OrderExplListenerI18NStringList>
+		<implementationClass>
+			com.rockwell.mes.services.order.impl.explinfo.OrderExplListenerI18NStringList
+		</implementationClass>
+	</OrderExplListenerI18NStringList>
+
+    <!-- BEGIN recipe functions -->
+    <OrderStepMFCInputGroup>
+        <implementationClass>
+            com.rockwell.mes.services.order.impl.mfc.OrderStepInputGroup
+        </implementationClass>
+    </OrderStepMFCInputGroup>
+    <OrderStepMFCInputItem>
+        <implementationClass>
+            com.rockwell.mes.services.order.impl.mfc.OrderStepInputFastBeanModel
+        </implementationClass>
+    </OrderStepMFCInputItem>
+    <OrderStepMFCOutputItem>
+        <implementationClass>
+            com.rockwell.mes.services.order.impl.mfc.OrderStepOutputFastBeanModel
+        </implementationClass>
+    </OrderStepMFCOutputItem>
+    <WDOrderStepInputService>
+        <implementationClass>com.rockwell.custmes.service.EnhancedWDOrderStepInputService</implementationClass>
+    </WDOrderStepInputService>
+	<OrderStepExecutionService>
+        <implementationClass>com.rockwell.custmes.service.EnhancedWIPOrderStepInputService</implementationClass>
+    </OrderStepExecutionService>
+    <!-- END recipe functions -->
+
+</configuration>
